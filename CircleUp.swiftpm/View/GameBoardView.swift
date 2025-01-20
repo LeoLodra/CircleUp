@@ -1,10 +1,17 @@
+//
+//  GameBoardView.swift
+//  CircleUp
+//
+//  Created by Leonardo Marhan on 21/01/25.
+//
+
 import SwiftUI
 
-struct GameView: View {
-    @StateObject private var presenter: GamePresenter
+struct GameBoardView: View {
+    @ObservedObject var presenter: GamePresenter
 
     init(presenter: GamePresenter) {
-        _presenter = StateObject(wrappedValue: presenter)
+        _presenter = ObservedObject(wrappedValue: presenter)
     }
 
     var body: some View {

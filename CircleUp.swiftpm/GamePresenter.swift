@@ -19,23 +19,23 @@ final class GamePresenter: GamePresenterProtocol {
     @Published var players: [Player] = []
     @Published var currentPlayerIndex: Int = 0
     @Published var currentCard: Card?
-
+    
     private let interactor: GameInteractorProtocol
     
     init(interactor: GameInteractorProtocol) {
         self.interactor = interactor
-        setupPlayers()
     }
     
-    private func setupPlayers() {
-        players = [
-            Player(name: "Alice", points: 10, skills: [.insight: 1, .charisma: 1, .strategy: 1]),
-            Player(name: "Bob", points: 10, skills: [.insight: 1, .charisma: 1, .strategy: 1]),
-        ]
+    func setupPlayers(names: [String]) {
+        players = names.map { name in
+            Player(name: name, points: 10, skills: [.insight: 1, .charisma: 1, .strategy: 1])
+        }
+        currentPlayerIndex = 0
+        currentCard = nil
     }
     
     var currentPlayer: Player {
-        players[currentPlayerIndex]
+        return players[currentPlayerIndex]
     }
     
     func drawCard() {

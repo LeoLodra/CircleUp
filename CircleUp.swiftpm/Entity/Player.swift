@@ -1,5 +1,5 @@
 //
-//  Card.swift
+//  Player.swift
 //  CircleUp
 //
 //  Created by Leonardo Marhan on 20/01/25.
