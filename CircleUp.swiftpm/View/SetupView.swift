@@ -21,18 +21,15 @@ struct SetupView: View {
     var body: some View {
         VStack {
             if playerNames.isEmpty {
-                // Step 1: Select number of players
                 VStack {
                     Text("Enter number of players:")
-                    Stepper("Number of players: \(playerCount)", value: $playerCount, in: 2...10)
+                    Stepper("Number of players: \(playerCount)", value: $playerCount, in: 2...8)
                         .padding()
                     Button("Next") {
-                        // Initialize player names list
                         playerNames = (1...playerCount).map { "Player \($0)" }
                     }
                 }
             } else {
-                // Step 2: Input all player names at once
                 VStack {
                     Text("Enter names for \(playerCount) players:")
                     ForEach(0..<playerCount, id: \.self) { index in
