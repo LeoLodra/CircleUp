@@ -16,4 +16,5 @@ struct Player: Identifiable {
     var name: String
     var points: Int
     var skills: [SkillType: Int]
+    var hand: [Card] = []
 }

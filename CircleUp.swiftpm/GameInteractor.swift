@@ -7,35 +7,49 @@
 
 
 protocol GameInteractorProtocol {
-    func drawCard(for player: Player) -> Card
+    func drawCard(from deckType: CardType, for player: Player) -> Card?
     func applyCardEffect(card: Card, to player: inout Player)
 }
 
 final class GameInteractor: GameInteractorProtocol {
-    private var deck: [Card] = []
+    private var strategyDeck: [Card] = []
+    private var personalDeck: [Card] = []
+    private var wildcardDeck: [Card] = []
     
     init() {
-        generateDeck()
+        generateDecks()
     }
     
     private func addCards(_ card: Card, count: Int) -> [Card] {
         return Array(repeating: card, count: count)
     }
     
-    private func generateDeck() {
-        deck = [
-            addCards(Card(type: .strategy, title: "Boost", description: "Gain 5 points.", points: 5, skillEffect: nil), count: 3),
-            addCards(Card(type: .personal, title: "Trivia", description: "Answer a group question.", points: 3, skillEffect: nil), count: 2),
+    private func generateDecks() {
+        strategyDeck = [
+            addCards(Card(type: .strategy, title: "Boost", description: "Gain 5 points.", points: 5, skillEffect: nil), count: 3)
+        ].flatMap { $0 }.shuffled()
+        
+        personalDeck = [
+            addCards(Card(type: .personal, title: "Trivia", description: "Answer a group question.", points: 3, skillEffect: nil), count: 2)
+        ].flatMap { $0 }.shuffled()
+        
+        wildcardDeck = [
             addCards(Card(type: .wildcard, title: "Random Event", description: "Lose 3 points.", points: -3, skillEffect: nil), count: 1)
-        ].flatMap { $0 }
-            .shuffled()
+        ].flatMap { $0 }.shuffled()
     }
     
-    func drawCard(for player: Player) -> Card {
-        if deck.isEmpty {
-            generateDeck()
+    func drawCard(from deckType: CardType, for player: Player) -> Card? {
+        switch deckType {
+        case .strategy:
+            guard !strategyDeck.isEmpty else { return nil }
+            return strategyDeck.removeFirst()
+        case .personal:
+            guard !personalDeck.isEmpty else { return nil }
+            return personalDeck.removeFirst()
+        case .wildcard:
+            guard !wildcardDeck.isEmpty else { return nil }
+            return wildcardDeck.removeFirst()
         }
-        return deck.removeFirst()
     }
     
     func applyCardEffect(card: Card, to player: inout Player) {
@@ -45,3 +59,4 @@ final class GameInteractor: GameInteractorProtocol {
         }
     }
 }
+
