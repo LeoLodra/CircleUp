@@ -51,7 +51,7 @@ final class GamePresenter: GamePresenterProtocol {
         currentCard = card
         currentCardAction = nil
     }
-
+    
     
     func playCard() {
         guard let card = currentCard else { return }
@@ -64,21 +64,18 @@ final class GamePresenter: GamePresenterProtocol {
     func saveCard() {
         guard let card = currentCard else { return }
         guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
-        players[playerIndex].hand.append(card)
+        interactor.saveCard(card: card, for: &players[playerIndex])
         currentCardAction = .saved
         currentCard = nil
     }
     
     func playSavedCard(_ card: Card) {
-        guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }),
-              let cardIndex = players[playerIndex].hand.firstIndex(where: { $0.id == card.id }) else { return }
-        interactor.applyCardEffect(card: card, to: &players[playerIndex])
-        players[playerIndex].hand.remove(at: cardIndex)
+        guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
+        interactor.playSavedCard(card: card, for: &players[playerIndex])
     }
     
-    
     func nextPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.count
+        currentPlayerIndex = interactor.nextPlayer(currentIndex: currentPlayerIndex, playerCount: players.count)
         currentCard = nil
     }
 }

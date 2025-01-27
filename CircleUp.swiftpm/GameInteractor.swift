@@ -9,6 +9,9 @@
 protocol GameInteractorProtocol {
     func drawCard(from deckType: CardType, for player: Player) -> Card?
     func applyCardEffect(card: Card, to player: inout Player)
+    func saveCard(card: Card, for player: inout Player)
+    func playSavedCard(card: Card, for player: inout Player)
+    func nextPlayer(currentIndex: Int, playerCount: Int) -> Int
 }
 
 final class GameInteractor: GameInteractorProtocol {
@@ -57,6 +60,20 @@ final class GameInteractor: GameInteractorProtocol {
         if let effect = card.skillEffect {
             player.skills[effect.skillType, default: 0] += effect.value
         }
+    }
+    
+    func saveCard(card: Card, for player: inout Player) {
+        player.hand.append(card)
+    }
+    
+    func playSavedCard(card: Card, for player: inout Player) {
+        guard let cardIndex = player.hand.firstIndex(where: { $0.id == card.id }) else { return }
+        applyCardEffect(card: card, to: &player)
+        player.hand.remove(at: cardIndex)
+    }
+    
+    func nextPlayer(currentIndex: Int, playerCount: Int) -> Int {
+        return (currentIndex + 1) % playerCount
     }
 }
 
