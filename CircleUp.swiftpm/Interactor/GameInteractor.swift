@@ -5,15 +5,6 @@
 //  Created by Leonardo Marhan on 20/01/25.
 //
 
-
-protocol GameInteractorProtocol {
-    func drawCard(from deckType: CardType, for player: Player) -> Card?
-    func applyCardEffect(card: Card, to player: inout Player)
-    func saveCard(card: Card, for player: inout Player)
-    func playSavedCard(card: Card, for player: inout Player)
-    func nextPlayer(currentIndex: Int, playerCount: Int) -> Int
-}
-
 final class GameInteractor: GameInteractorProtocol {
     private var strategyDeck: [Card] = []
     private var personalDeck: [Card] = []
