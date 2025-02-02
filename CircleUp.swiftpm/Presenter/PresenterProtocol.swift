@@ -10,9 +10,11 @@ import Foundation
 protocol GamePresenterProtocol: ObservableObject {
     var players: [Player] { get }
     var currentPlayer: Player { get }
+    func selectRandomActivity()
     var currentCard: Card? { get }
-    func drawCard(from deckType: CardType)
+    func drawCard()
     func nextPlayer()
+    func resetActivities()
 }
 
 protocol QuestionPresenterProtocol: ObservableObject {

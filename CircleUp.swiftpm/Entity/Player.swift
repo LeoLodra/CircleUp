@@ -7,14 +7,17 @@
 
 import Foundation
 
-enum SkillType {
-    case insight, charisma, strategy
+enum PersonalityTrait: String, CaseIterable {
+    case bold = "Bold"
+    case thoughtful = "Thoughtful"
+    case funny = "Funny"
+    case competitive = "Competitive"
+    case empathetic = "Empathetic"
 }
 
 struct Player: Identifiable {
     let id = UUID()
     var name: String
-    var points: Int
-    var skills: [SkillType: Int]
+    var traits: [PersonalityTrait: Int] = [:]
     var hand: [Card] = []
 }

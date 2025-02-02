@@ -20,63 +20,44 @@ struct GameBoardView: View {
                 VStack {
                     Text("Current Player: \(presenter.currentPlayer.name)")
                         .font(.headline)
-                    if let card = presenter.currentCard {
-                        Text("Card: \(card.title)")
+                    
+                    if let activity = presenter.currentActivity {
+                        Text("Activity: \(activity.type)")
                             .font(.title2)
                             .padding()
-                        Text(card.description)
+                        Text(activity.prompt)
                             .font(.body)
-                        if presenter.currentCardAction == nil { // Show actions only if no action has been taken
-                            HStack {
-                                Button("Play Card") {
-                                    presenter.playCard()
-                                }
-                                .padding()
-                                .background(Color.green.opacity(0.8))
-                                .cornerRadius(8)
-                                .foregroundColor(.white)
-                                
-                                Button("Save Card") {
-                                    presenter.saveCard()
-                                }
-                                .padding()
-                                .background(Color.blue.opacity(0.8))
-                                .cornerRadius(8)
-                                .foregroundColor(.white)
-                            }
-                        }
+                            .padding()
                     } else {
-                        Text("Choose a deck to draw from:")
-                        HStack {
-                            Button("Strategy Deck") {
-                                presenter.drawCard(from: .strategy)
-                            }
+                        Text("Tap the button to start an activity!")
+                            .font(.body)
                             .padding()
-                            .background(Color.green.opacity(0.8))
-                            .cornerRadius(8)
-                            .foregroundColor(.white)
-                            
-                            Button("Personal Deck") {
-                                presenter.drawCard(from: .personal)
-                            }
-                            .padding()
-                            .background(Color.blue.opacity(0.8))
-                            .cornerRadius(8)
-                            .foregroundColor(.white)
-                            
-                            Button("Wildcard Deck") {
-                                presenter.drawCard(from: .wildcard)
-                            }
-                            .padding()
-                            .background(Color.red.opacity(0.8))
-                            .cornerRadius(8)
-                            .foregroundColor(.white)
-                        }
                     }
                     
-                    
-                    Button("Next Player") {
-                        presenter.nextPlayer()
+                    HStack {
+                        Button("Select Activity") {
+                            presenter.selectRandomActivity()
+                        }
+                        .padding()
+                        .background(Color.green.opacity(0.8))
+                        .cornerRadius(8)
+                        .foregroundColor(.white)
+                        
+                        Button("Wild Cards") {
+                            presenter.drawCard()
+                        }
+                        .padding()
+                        .background(Color.yellow.opacity(0.8))
+                        .cornerRadius(8)
+                        .foregroundColor(.white)
+                        
+                        Button("Next Player") {
+                            presenter.nextPlayer()
+                        }
+                        .padding()
+                        .background(Color.blue.opacity(0.8))
+                        .cornerRadius(8)
+                        .foregroundColor(.white)
                     }
                 }
                 .rotationEffect(
@@ -115,7 +96,6 @@ struct PlayerView: View {
                 .padding(8)
                 .background(Capsule().fill(Color.blue.opacity(0.8)))
                 .foregroundColor(.white)
-            Text("Points: \(player.points)")
             if !player.hand.isEmpty {
                 VStack {
                     HStack {

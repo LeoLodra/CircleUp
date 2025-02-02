@@ -14,6 +14,7 @@ enum CardAction {
 final class GamePresenter: GamePresenterProtocol {
     @Published var players: [Player] = []
     @Published var currentPlayerIndex: Int = 0
+    @Published var currentActivity: Activity?
     @Published var currentCard: Card?
     @Published var currentCardAction: CardAction? // Tracks if card is saved or played
     
@@ -25,7 +26,7 @@ final class GamePresenter: GamePresenterProtocol {
     
     func setupPlayers(names: [String]) {
         players = names.map { name in
-            Player(name: name, points: 10, skills: [.insight: 1, .charisma: 1, .strategy: 1])
+            Player(name: name)
         }
         currentPlayerIndex = 0
         currentCard = nil
@@ -35,24 +36,33 @@ final class GamePresenter: GamePresenterProtocol {
         return players[currentPlayerIndex]
     }
     
-    func drawCard(from deckType: CardType) {
-        guard let card = interactor.drawCard(from: deckType, for: currentPlayer) else {
+    func selectRandomActivity() {
+        guard let activity = interactor.getRandomActivity() else {
+            currentActivity = nil
+            return
+        }
+        currentActivity = activity
+    }
+    
+    func drawCard() {
+        guard let card = interactor.drawCard(for: currentPlayer) else {
             currentCard = nil
             return
         }
         currentCard = card
         currentCardAction = nil
+        saveCard()
     }
     
     
-    func playCard() {
-        guard let card = currentCard else { return }
-        guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
-        interactor.applyCardEffect(card: card, to: &players[playerIndex])
-        currentCardAction = .played
-        currentCard = nil
-    }
-    
+//    func playCard() {
+//        guard let card = currentCard else { return }
+//        guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
+//        interactor.applyCardEffect(card: card, to: &players[playerIndex])
+//        currentCardAction = .played
+//        currentCard = nil
+//    }
+//    
     func saveCard() {
         guard let card = currentCard else { return }
         guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
@@ -69,5 +79,9 @@ final class GamePresenter: GamePresenterProtocol {
     func nextPlayer() {
         currentPlayerIndex = interactor.nextPlayer(currentIndex: currentPlayerIndex, playerCount: players.count)
         currentCard = nil
+    }
+    
+    func resetActivities() {
+        interactor.resetActivities()
     }
 }
