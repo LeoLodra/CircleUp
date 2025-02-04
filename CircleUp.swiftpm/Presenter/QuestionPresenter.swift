@@ -1,28 +1,28 @@
+////
+////  QuestionPresenter.swift
+////  CircleUp
+////
+////  Created by Leonardo Marhan on 27/01/25.
+////
 //
-//  QuestionPresenter.swift
-//  CircleUp
+//import Foundation
 //
-//  Created by Leonardo Marhan on 27/01/25.
+//final class QuestionPresenter: QuestionPresenterProtocol {
+//    @Published var currentQuestion: Question?
+//    
+//    private let interactor: QuestionInteractorProtocol
 //
-
-import Foundation
-
-final class QuestionPresenter: QuestionPresenterProtocol {
-    @Published var currentQuestion: Question?
-    
-    private let interactor: QuestionInteractorProtocol
-
-    init(interactor: QuestionInteractorProtocol) {
-        self.interactor = interactor
-    }
-
-    func fetchQuestion() {
-        currentQuestion = interactor.fetchQuestion()
-    }
-
-    func submitAnswer(choice: String) {
-        guard let question = currentQuestion else { return }
-        interactor.processAnswer(for: question, choice: choice)
-        fetchQuestion() // Load the next question
-    }
-}
+//    init(interactor: QuestionInteractorProtocol) {
+//        self.interactor = interactor
+//    }
+//
+//    func fetchQuestion() {
+//        currentQuestion = interactor.fetchQuestion()
+//    }
+//
+//    func submitAnswer(choice: String) {
+//        guard let question = currentQuestion else { return }
+//        interactor.processAnswer(for: question, choice: choice)
+//        fetchQuestion() // Load the next question
+//    }
+//}

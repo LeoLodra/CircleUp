@@ -14,9 +14,12 @@ enum CardAction {
 final class GamePresenter: GamePresenterProtocol {
     @Published var players: [Player] = []
     @Published var currentPlayerIndex: Int = 0
-    @Published var currentActivity: Activity?
+    @Published var currentActivity: ActivityType?
+    @Published var currentQuestion: Question?
     @Published var currentCard: Card?
     @Published var currentCardAction: CardAction? // Tracks if card is saved or played
+    
+    @Published var votes: [String: [UUID]] = [:]
     
     private let interactor: GameInteractorProtocol
     
@@ -41,7 +44,12 @@ final class GamePresenter: GamePresenterProtocol {
             currentActivity = nil
             return
         }
+        guard let question = interactor.getRandomQuestion(for: activity) else {
+            currentQuestion = nil
+            return
+        }
         currentActivity = activity
+        currentQuestion = question
     }
     
     func drawCard() {
@@ -55,14 +63,14 @@ final class GamePresenter: GamePresenterProtocol {
     }
     
     
-//    func playCard() {
-//        guard let card = currentCard else { return }
-//        guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
-//        interactor.applyCardEffect(card: card, to: &players[playerIndex])
-//        currentCardAction = .played
-//        currentCard = nil
-//    }
-//    
+    //    func playCard() {
+    //        guard let card = currentCard else { return }
+    //        guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
+    //        interactor.applyCardEffect(card: card, to: &players[playerIndex])
+    //        currentCardAction = .played
+    //        currentCard = nil
+    //    }
+    //
     func saveCard() {
         guard let card = currentCard else { return }
         guard let playerIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
@@ -83,5 +91,33 @@ final class GamePresenter: GamePresenterProtocol {
     
     func resetActivities() {
         interactor.resetActivities()
+    }
+    
+    func isPlayerVoted(_ playerID: UUID) -> Bool {
+        return votes.values.flatMap { $0 }.contains(playerID)
+    }
+    
+    func registerVote(playerID: String, choice: String) {
+        if let uuid = UUID(uuidString: playerID), !isPlayerVoted(uuid){
+            votes[choice, default: []].append(uuid)
+            if isVotingComplete() {
+                endVoting()
+            }
+        }
+    }
+    
+    func isVotingComplete() -> Bool {
+        let totalVotes = votes.values.reduce(0) { $0 + $1.count }
+        return totalVotes == players.count
+    }
+    
+    func endVoting() {
+        // Handle round end logic (e.g., show results)
+        nextPlayer() //temporary
+        print("Voting Complete: \(votes)")
+    }
+    
+    func getPlayerName(from id: UUID) -> String {
+        players.first(where: { $0.id == id })?.name ?? "?"
     }
 }

@@ -6,14 +6,22 @@
 //
 
 protocol GameInteractorProtocol {
-    func drawCard(for player: Player) -> Card?
-    func getRandomActivity() -> Activity?
+    func getRandomActivity() -> ActivityType?
+    func getRandomQuestion(for type: ActivityType) -> Question?
     func resetActivities()
-//    func applyCardEffect(card: Card, to player: inout Player)
+    func nextPlayer(currentIndex: Int, playerCount: Int) -> Int
+    
+    func drawCard(for player: Player) -> Card?
     func saveCard(card: Card, for player: inout Player)
     func playSavedCard(card: Card, for player: inout Player)
-    func nextPlayer(currentIndex: Int, playerCount: Int) -> Int
 }
+
+//protocol CardInteractorProtocol {
+//    func drawCard(for player: Player) -> Card?
+//    func saveCard(card: Card, for player: inout Player)
+//    func playSavedCard(card: Card, for player: inout Player)
+////    func applyCardEffect(card: Card, to player: inout Player)
+//}
 
 protocol QuestionInteractorProtocol {
     func fetchQuestion() -> Question?

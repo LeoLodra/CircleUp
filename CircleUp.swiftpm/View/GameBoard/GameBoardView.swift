@@ -10,9 +10,9 @@ import SwiftUI
 struct GameBoardView: View {
     @ObservedObject var presenter: GamePresenter
     
-    init(presenter: GamePresenter) {
-        _presenter = ObservedObject(wrappedValue: presenter)
-    }
+    //    init(presenter: GamePresenter) {
+    //        _presenter = ObservedObject(wrappedValue: presenter)
+    //    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -22,12 +22,15 @@ struct GameBoardView: View {
                         .font(.headline)
                     
                     if let activity = presenter.currentActivity {
-                        Text("Activity: \(activity.type)")
+                        Text("Activity: \(activity.rawValue)")
                             .font(.title2)
                             .padding()
-                        Text(activity.prompt)
-                            .font(.body)
-                            .padding()
+                        if let question = presenter.currentQuestion {               Text(question.title)
+                                .font(.body)
+                                .padding()
+                            //                                .transition(.scale)
+                            //                                .animation(.easeInOut(duration: 1.5))
+                        }
                     } else {
                         Text("Tap the button to start an activity!")
                             .font(.body)
@@ -59,6 +62,25 @@ struct GameBoardView: View {
                         .cornerRadius(8)
                         .foregroundColor(.white)
                     }
+                    if let question = presenter.currentQuestion {
+                        Text(question.title)
+                            .font(.title2)
+                            .padding()
+                        
+                        HStack {
+                            if let options = question.options {
+                                ForEach(options, id: \.self) { option in
+                                    VoteDropAreaView(choice: option, presenter: presenter)
+                                }
+                            }
+                        }
+                        .padding()
+                        HStack {
+                            ForEach(presenter.players) { player in
+                                
+                            }
+                        }
+                    }
                 }
                 .rotationEffect(
                     PositionCalculator.rotationForCurrentPlayer(
@@ -75,6 +97,7 @@ struct GameBoardView: View {
                         total: presenter.players.count,
                         size: geometry.size
                     )
+                    
                     PlayerView(presenter: presenter, player: presenter.players[index])
                         .rotationEffect(position.rotation)
                         .position(position.point)
@@ -82,47 +105,5 @@ struct GameBoardView: View {
             }
         }
         .padding()
-    }
-}
-
-struct PlayerView: View {
-    @ObservedObject var presenter: GamePresenter
-    let player: Player
-    
-    var body: some View {
-        VStack {
-            Text(player.name)
-                .font(.headline)
-                .padding(8)
-                .background(Capsule().fill(Color.blue.opacity(0.8)))
-                .foregroundColor(.white)
-            if !player.hand.isEmpty {
-                VStack {
-                    HStack {
-                        ForEach(player.hand) { card in
-                            VStack {
-                                Text(card.title)
-                                    .font(.subheadline)
-                                    .padding(4)
-                                    .background(Color.orange.opacity(0.7))
-                                    .cornerRadius(6)
-                                    .foregroundColor(.white)
-                                
-                                Button("Play") {
-                                    presenter.playSavedCard(card)
-                                }
-                                .font(.footnote)
-                                .padding(4)
-                                .background(Color.green)
-                                .cornerRadius(4)
-                                .foregroundColor(.white)
-                            }
-                        }
-                    }
-                }
-                .padding()
-            }
-        }
-        .frame(width: 300, height: 300)
     }
 }

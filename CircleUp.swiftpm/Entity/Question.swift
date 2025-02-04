@@ -8,9 +8,9 @@
 import Foundation
 
 struct Question {
-    let id: UUID
+    let id: UUID = UUID()
     let title: String
-    let options: [String] // Multiple choices for the question
+    let options: [String]? // Multiple choices for the question
     let type: QuestionType
 }
 
