@@ -5,14 +5,15 @@
 //  Created by Leonardo Marhan on 20/01/25.
 //
 
+import Foundation
+
 final class GameInteractor: GameInteractorProtocol {
     private var activityDeck: [ActivityType: BaseQuestionInteractor] = [:]
     private var usedActivities: [ActivityType: [String]] = [:]
-    private var wildCards: [Card] = []
+    private var votes: [String: [UUID]] = [:]
     
     init() {
         generateActivities()
-        generateWildCards()
     }
     
     private func generateActivities() {
@@ -37,7 +38,6 @@ final class GameInteractor: GameInteractorProtocol {
                 )
             ])
         ]
-        
         usedActivities = activityDeck.mapValues { _ in [] }
     }
     
@@ -54,40 +54,38 @@ final class GameInteractor: GameInteractorProtocol {
         generateActivities()
     }
     
-    private func addCards(_ card: Card, count: Int) -> [Card] {
-        return Array(repeating: card, count: count)
-    }
-    
-    private func generateWildCards() {
-        wildCards = [
-            addCards(Card(title: "Boost", description: "Gain 5 points."), count: 3)
-        ].flatMap { $0 }.shuffled()
-    }
-    
-    func drawCard(for player: Player) -> Card? {
-        guard !wildCards.isEmpty else { return nil }
-        return wildCards.removeFirst()
-    }
-    
-    //    func applyCardEffect(card: Card, to player: inout Player) {
-    //        player.points += card.points
-    //        if let effect = card.skillEffect {
-    //            player.skills[effect.skillType, default: 0] += effect.value
-    //        }
-    //    }
-    //
-    func saveCard(card: Card, for player: inout Player) {
-        player.hand.append(card)
-    }
-    
-    func playSavedCard(card: Card, for player: inout Player) {
-        guard let cardIndex = player.hand.firstIndex(where: { $0.id == card.id }) else { return }
-        //        applyCardEffect(card: card, to: &player)
-        player.hand.remove(at: cardIndex)
-    }
-    
     func nextPlayer(currentIndex: Int, playerCount: Int) -> Int {
         return (currentIndex + 1) % playerCount
     }
+    
+    func registerVote(playerID: String, choice: String, totalPlayers: Int) {
+        if let uuid = UUID(uuidString: playerID), !isPlayerVoted(uuid) {
+            votes[choice, default: []].append(uuid)
+            if isVotingComplete(totalPlayers: totalPlayers) {
+                endVoting()
+            }
+        }
+    }
+    
+    func isVotingComplete(totalPlayers: Int) -> Bool {
+        let totalVotes = votes.values.reduce(0) { $0 + $1.count }
+        return totalVotes >= totalPlayers
+    }
+    
+    private func endVoting() {
+        // Notify presenter via delegate or completion handler
+        print("Voting Complete: \(votes)")
+    }
+    
+    func getVotes() -> [String: [UUID]] {
+        return votes
+    }
+    
+    func isPlayerVoted(_ playerID: UUID) -> Bool {
+        return votes.values.flatMap { $0 }.contains(playerID)
+    }
+    
+    func getPlayerName(from id: UUID, players: [Player]) -> String {
+        return players.first(where: { $0.id == id })?.name ?? "?"
+    }
 }
-

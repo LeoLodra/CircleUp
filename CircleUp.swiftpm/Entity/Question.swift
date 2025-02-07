@@ -8,10 +8,10 @@
 import Foundation
 
 struct Question {
-    let id: UUID = UUID()
-    let title: String
-    let options: [String]? // Multiple choices for the question
-    let type: QuestionType
+    var id: UUID = UUID()
+    var title: String
+    var options: [String]? // Multiple choices for the question
+    var type: QuestionType
 }
 
 enum QuestionType {

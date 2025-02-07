@@ -8,45 +8,40 @@
 import SwiftUI
 
 struct PlayerView: View {
-    @ObservedObject var presenter: GamePresenter
+    @ObservedObject var gamePresenter: GamePresenter
+    @ObservedObject var cardPresenter: CardPresenter
     let player: Player
     
     var body: some View {
         VStack {
             if !player.hand.isEmpty {
-                VStack {
-                    HStack {
-                        ForEach(player.hand) { card in
-                            VStack {
-                                Text(card.title)
-                                    .font(.subheadline)
-                                    .padding(4)
-                                    .background(Color.orange.opacity(0.7))
-                                    .cornerRadius(6)
-                                    .foregroundColor(.white)
-                                
-                                Button("Play") {
-                                    presenter.playSavedCard(card)
-                                }
-                                .font(.footnote)
+                HStack {
+                    ForEach(player.hand, id: \.id) { card in
+                        VStack {
+                            Text(card.title)
+                                .font(.subheadline)
                                 .padding(4)
-                                .background(Color.green)
-                                .cornerRadius(4)
+                                .background(Color.orange.opacity(0.7))
+                                .cornerRadius(6)
                                 .foregroundColor(.white)
+                            
+                            Button("Play") {
+                                cardPresenter.playSavedCard(card)
                             }
+                            .buttonStyle(GameButtonStyle(color: .green))
                         }
                     }
                 }
-                .padding(4)
             }
-            if let _ = presenter.currentQuestion {
-                VoteTokenView(player: player, presenter: presenter)
-            }
+            
             Text(player.name)
                 .font(.headline)
                 .padding(8)
                 .background(Capsule().fill(Color.blue.opacity(0.8)))
                 .foregroundColor(.white)
+            if let _ = gamePresenter.currentQuestion {
+                VoteTokenView(player: player, presenter: gamePresenter)
+            }
         }
         .frame(width: 300, height: 300)
     }

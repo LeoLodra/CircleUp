@@ -10,12 +10,12 @@ enum ActivityType: String, CaseIterable {
     case wouldYouRather = "Would You Rather"
 //    case quickChallenge = "Quick Challenge"
 //    case moodTalk = "Mood Talk"
-//    case truthOrDare = "Truth or Dare"
+    case truthOrDare = "Truth or Dare"
 //    case sayAnything = "Say Anything"
 //    case charades = "Charades"
 }
 
 struct Activity {
-    let type: ActivityType
-    let prompt: String
+    var type: ActivityType
+    var prompt: String
 }

@@ -16,7 +16,7 @@ enum PersonalityTrait: String, CaseIterable {
 }
 
 struct Player: Identifiable {
-    let id = UUID()
+    var id = UUID()
     var name: String
     var traits: [PersonalityTrait: Int] = [:]
     var hand: [Card] = []

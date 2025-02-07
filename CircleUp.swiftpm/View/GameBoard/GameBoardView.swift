@@ -8,28 +8,34 @@
 import SwiftUI
 
 struct GameBoardView: View {
-    @ObservedObject var presenter: GamePresenter
-    
-    //    init(presenter: GamePresenter) {
-    //        _presenter = ObservedObject(wrappedValue: presenter)
-    //    }
+    @ObservedObject var gamePresenter: GamePresenter
+    @ObservedObject var cardPresenter: CardPresenter
+    let onExit: () -> Void
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 VStack {
-                    Text("Current Player: \(presenter.currentPlayer.name)")
+                    Text("Current Player: \(gamePresenter.currentPlayer.name)")
                         .font(.headline)
                     
-                    if let activity = presenter.currentActivity {
+                    if let activity = gamePresenter.currentActivity {
                         Text("Activity: \(activity.rawValue)")
                             .font(.title2)
                             .padding()
-                        if let question = presenter.currentQuestion {               Text(question.title)
+                        
+                        if let question = gamePresenter.currentQuestion {
+                            Text(question.title)
                                 .font(.body)
                                 .padding()
-                            //                                .transition(.scale)
-                            //                                .animation(.easeInOut(duration: 1.5))
+                            HStack {
+                                if let options = question.options {
+                                    ForEach(options, id: \.self) { option in
+                                        VoteDropAreaView(choice: option, presenter: gamePresenter)
+                                    }
+                                }
+                            }
+                            .padding()
                         }
                     } else {
                         Text("Tap the button to start an activity!")
@@ -39,71 +45,54 @@ struct GameBoardView: View {
                     
                     HStack {
                         Button("Select Activity") {
-                            presenter.selectRandomActivity()
+                            gamePresenter.selectRandomActivity()
                         }
-                        .padding()
-                        .background(Color.green.opacity(0.8))
-                        .cornerRadius(8)
-                        .foregroundColor(.white)
+                        .buttonStyle(GameButtonStyle(color: .green))
                         
                         Button("Wild Cards") {
-                            presenter.drawCard()
+                            cardPresenter.drawCard()
                         }
-                        .padding()
-                        .background(Color.yellow.opacity(0.8))
-                        .cornerRadius(8)
-                        .foregroundColor(.white)
+                        .buttonStyle(GameButtonStyle(color: .yellow))
                         
                         Button("Next Player") {
-                            presenter.nextPlayer()
+                            gamePresenter.nextPlayer()
                         }
-                        .padding()
-                        .background(Color.blue.opacity(0.8))
-                        .cornerRadius(8)
-                        .foregroundColor(.white)
-                    }
-                    if let question = presenter.currentQuestion {
-                        Text(question.title)
-                            .font(.title2)
-                            .padding()
-                        
-                        HStack {
-                            if let options = question.options {
-                                ForEach(options, id: \.self) { option in
-                                    VoteDropAreaView(choice: option, presenter: presenter)
-                                }
-                            }
-                        }
-                        .padding()
-                        HStack {
-                            ForEach(presenter.players) { player in
-                                
-                            }
-                        }
+                        .buttonStyle(GameButtonStyle(color: .blue))
                     }
                 }
                 .rotationEffect(
                     PositionCalculator.rotationForCurrentPlayer(
-                        index: presenter.currentPlayerIndex,
-                        total: presenter.players.count
+                        index: gamePresenter.currentPlayerIndex,
+                        total: gamePresenter.players.count
                     )
                 )
                 
-                
-                // Player views
-                ForEach(presenter.players.indices, id: \.self) { index in
+                ForEach(gamePresenter.players.indices, id: \.self) { index in
                     let position = PositionCalculator.rectanglePosition(
                         for: index,
-                        total: presenter.players.count,
+                        total: gamePresenter.players.count,
                         size: geometry.size
                     )
                     
-                    PlayerView(presenter: presenter, player: presenter.players[index])
+                    PlayerView(gamePresenter: gamePresenter, cardPresenter: cardPresenter, player: gamePresenter.players[index])
                         .rotationEffect(position.rotation)
                         .position(position.point)
                 }
             }
         }
         .padding()
+    }
+}
+
+struct GameButtonStyle: ButtonStyle {
+    var color: Color
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding()
+            .background(color.opacity(0.8))
+            .cornerRadius(8)
+            .foregroundColor(.white)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
     }
 }

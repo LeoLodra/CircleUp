@@ -10,12 +10,13 @@ import SwiftUI
 struct SetupView: View {
     @State private var playerCount = 2
     @State private var playerNames: [String] = []
-    @Binding var isSettingUpPlayers: Bool
     @ObservedObject var presenter: GamePresenter
+    
+    let onSetupComplete: () -> Void
 
-    init(presenter: GamePresenter, isSettingUpPlayers: Binding<Bool>) {
+    init(presenter: GamePresenter, onSetupComplete: @escaping () -> Void) {
         _presenter = ObservedObject(wrappedValue: presenter)
-        _isSettingUpPlayers = isSettingUpPlayers
+        self.onSetupComplete = onSetupComplete
     }
 
     var body: some View {
@@ -39,7 +40,7 @@ struct SetupView: View {
                     }
                     Button("Start Game") {
                         presenter.setupPlayers(names: playerNames)
-                        isSettingUpPlayers = false
+                        onSetupComplete()
                     }
                 }
             }

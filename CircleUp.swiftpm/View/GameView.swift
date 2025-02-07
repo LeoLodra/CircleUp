@@ -1,18 +1,28 @@
 import SwiftUI
 
 struct GameView: View {
-    @StateObject private var presenter: GamePresenter
-    @State public var isSettingUpPlayers = true
+    @StateObject private var gamePresenter: GamePresenter
+    @StateObject private var cardPresenter: CardPresenter
+    @StateObject private var router: GameRouter
 
-    init(presenter: GamePresenter) {
-        _presenter = StateObject(wrappedValue: presenter)
+    init(gamePresenter: GamePresenter, cardPresenter: CardPresenter, router: GameRouter) {
+        _gamePresenter = StateObject(wrappedValue: gamePresenter)
+        _cardPresenter = StateObject(wrappedValue: cardPresenter)
+        _router = StateObject(wrappedValue: router)
     }
 
     var body: some View {
-        if isSettingUpPlayers {
-            SetupView(presenter: presenter, isSettingUpPlayers: $isSettingUpPlayers)
-        } else {
-            GameBoardView(presenter: presenter)
+        switch router.currentView {
+        case .setup:
+            SetupView(presenter: gamePresenter) {
+                router.navigateToGameBoard()
+            }
+
+        case .gameBoard:
+            GameBoardView(gamePresenter: gamePresenter, cardPresenter: cardPresenter) {
+                router.navigateToSetup()
+            }
         }
     }
 }
+
