@@ -34,25 +34,49 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         return players[currentPlayerIndex]
     }
     
-    func selectRandomActivity() {
-        guard let activity = interactor.getRandomActivity(), let question = interactor.getRandomQuestion(for: activity) else {
+    @MainActor
+    func rollRandomActivity() async {
+        let allActivities = ActivityType.allCases
+        let rollDuration: Double = 2.0
+        let interval: Double = 0.1
+        let totalRolls = Int(rollDuration / interval)
+        
+        for i in 0..<totalRolls {
+            let currentIndex = i % allActivities.count
+            currentActivity = allActivities[currentIndex]
+            try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+        }
+
+        guard let selectedActivity = interactor.getRandomActivity() else {
             currentActivity = nil
-            currentQuestion = nil
             return
         }
+        currentActivity = selectedActivity
         
-        if activity == .mostLikely {
-            currentQuestion = Question(
-                title: question.title,
-                options: players.map { $0.name },
-                type: question.type
-            )
-        } else {
-            currentQuestion = question
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+
+        let possibleQuestions = interactor.getAvailableQuestions(for: selectedActivity)
+        
+        let totalQuestionRolls = Int(1.5 / interval)
+        for i in 0..<totalQuestionRolls {
+            let questionIndex = i % possibleQuestions.count
+            currentQuestion = possibleQuestions[questionIndex]
+            try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
         }
-        
-        currentActivity = activity
+
+        if let finalQuestion = interactor.getRandomQuestion(for: selectedActivity) {
+            if selectedActivity == .mostLikely {
+                currentQuestion = Question(
+                    title: finalQuestion.title,
+                    options: players.map { $0.name },
+                    type: finalQuestion.type
+                )
+            } else {
+                currentQuestion = finalQuestion
+            }
+        }
     }
+
     
     func nextPlayer() {
         currentPlayerIndex = interactor.nextPlayer(currentIndex: currentPlayerIndex, playerCount: players.count)

@@ -10,7 +10,7 @@ import Foundation
 protocol GamePresenterProtocol: ObservableObject {
     var players: [Player] { get }
     var currentPlayer: Player { get }
-    func selectRandomActivity()
+    func rollRandomActivity() async
     func registerVote(playerID: String, choice: String)
 //    func startRollingActivity()
     func nextPlayer()

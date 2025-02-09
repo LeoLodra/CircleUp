@@ -24,40 +24,22 @@ final class GameInteractor: GameInteractorProtocol {
     
     private func generateActivities() {
         activityDeck = [
-            .mostLikely: MostLikelyInteractor(questions: [
-                Question(
-                    title: "Who is most likely to survive a zombie apocalypse?",
-                    options: nil,
-                    type: .mostLikely
-                )
-            ]),
-            .wouldYouRather: WouldYouRatherInteractor(questions: [
-                Question(
-                    title: "Would you rather always be 10 minutes late or 20 minutes early?",
-                    options: ["10 minutes late", "20 minutes early"],
-                    type: .wouldYouRather
-                ),
-                Question(
-                    title: "Would you rather have unlimited money or unlimited time?",
-                    options: ["Unlimited Money", "Unlimited Time"],
-                    type: .wouldYouRather
-                )
-            ])
+            .mostLikely: MostLikelyInteractor(),
+            .wouldYouRather: WouldYouRatherInteractor()
         ]
-        usedActivities = activityDeck.mapValues { _ in [] }
     }
     
     func getRandomActivity() -> ActivityType? {
-        let availableActivities = activityDeck.filter { !$0.value.isEmpty() }.keys
+        let availableActivities = activityDeck.filter { !$0.value.isEmpty(for: $0.key) }.keys
         return availableActivities.randomElement()
     }
     
-    func getAvailableActivities() -> [ActivityType] {
-        return Array(activityDeck.keys)
+    func getAvailableQuestions(for type: ActivityType) -> [Question] {
+        return activityDeck[type]?.peekQuestions(for: type) ?? []
     }
     
     func getRandomQuestion(for type: ActivityType) -> Question? {
-        return activityDeck[type]?.fetchQuestion()
+        return activityDeck[type]?.fetchQuestion(for: type)
     }
     
     func resetActivities() {

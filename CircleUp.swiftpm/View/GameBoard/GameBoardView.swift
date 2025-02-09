@@ -45,19 +45,15 @@ struct GameBoardView: View {
                     
                     HStack {
                         if gamePresenter.currentActivity == nil {
-                            Button("Select Activity") {
-                                gamePresenter.selectRandomActivity()
-                            }
-                            .buttonStyle(GameButtonStyle(color: .green))
+                            //                            Button("Select Activity") {
+                            CasinoRollView(gamePresenter: gamePresenter)
+                            //                            }
+                                .buttonStyle(GameButtonStyle(color: .green))
                             Button("Wild Cards") {
                                 cardPresenter.drawCard()
                             }
                             .buttonStyle(GameButtonStyle(color: .yellow))
                         }
-//                        Button("Next Player") {
-//                            gamePresenter.nextPlayer()
-//                        }
-//                        .buttonStyle(GameButtonStyle(color: .blue))
                     }
                 }
                 .rotationEffect(

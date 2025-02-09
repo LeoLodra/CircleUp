@@ -18,7 +18,7 @@ struct VoteDropAreaView: View {
                 .padding()
                 .background(Color.gray.opacity(0.3))
                 .cornerRadius(12)
-            
+                .frame(width: 150, height: 100)
             // Show votes in this area
             HStack {
                 ForEach(presenter.votes[choice] ?? [], id: \.self) { playerID in
@@ -31,7 +31,7 @@ struct VoteDropAreaView: View {
                 }
             }
         }
-        .frame(width: 150, height: 150)
+        
         .onDrop(of: [.text], isTargeted: nil) { providers in
             providers.first?.loadObject(ofClass: String.self) { playerID, _ in
                 if let playerID = playerID {
