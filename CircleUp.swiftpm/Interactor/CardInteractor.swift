@@ -18,7 +18,10 @@ final class CardInteractor: CardInteractorProtocol {
     
     private func generateWildCards() {
         wildCards = [
-            addCards(Card(title: "Boost", description: "Gain 5 points."), count: 3)
+            addCards(Card(title: "Skip", description: "Skip your turn", effect: .skipTurn), count: 2),
+            addCards(Card(title: "Immunity", description: "Ignore a question / activity", effect: .ignoreActivity), count: 2),
+            addCards(Card(title: "Reverse Order", description: "Reverse turn order", effect: .reverseOrder), count: 2),
+            addCards(Card(title: "Swap", description: "Change the current question / activity", effect: .swapQuestion), count: 2)
         ].flatMap { $0 }.shuffled()
     }
     
@@ -27,20 +30,27 @@ final class CardInteractor: CardInteractorProtocol {
         return wildCards.removeFirst()
     }
     
-    //    func applyCardEffect(card: Card, to player: inout Player) {
-    //        player.points += card.points
-    //        if let effect = card.skillEffect {
-    //            player.skills[effect.skillType, default: 0] += effect.value
-    //        }
-    //    }
-
+    func applyCardEffect(card: Card, to gamePresenter: GamePresenter) {
+            switch card.effect {
+            case .skipTurn:
+                gamePresenter.skipCurrentTurn()
+            case .ignoreActivity:
+                gamePresenter.grantImmunity()
+            case .reverseOrder:
+                gamePresenter.reverseTurnOrder()
+            case .swapQuestion:
+                gamePresenter.swapQuestion()
+            }
+        }
+    
     func saveCard(card: Card, for player: inout Player) {
-        player.hand.append(card)
+        if player.hand.count < 2 { // Prevent hoarding
+            player.hand.append(card)
+        }
     }
     
     func playSavedCard(card: Card, for player: inout Player) {
         guard let cardIndex = player.hand.firstIndex(where: { $0.id == card.id }) else { return }
-        //        applyCardEffect(card: card, to: &player)
         player.hand.remove(at: cardIndex)
     }
 }

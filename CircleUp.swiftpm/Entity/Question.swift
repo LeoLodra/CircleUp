@@ -11,11 +11,5 @@ struct Question {
     var id: UUID = UUID()
     var title: String
     var options: [String]? // Multiple choices for the question
-    var type: QuestionType
-}
-
-enum QuestionType {
-    case wouldYouRather
-    case mostLikely
-    case quickQuestion
+    var type: ActivityType
 }

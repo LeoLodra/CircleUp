@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CasinoRollView: View {
+struct RollView: View {
     @ObservedObject var gamePresenter: GamePresenter
     @State private var isRolling = false
 

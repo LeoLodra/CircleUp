@@ -50,6 +50,10 @@ final class GameInteractor: GameInteractorProtocol {
         return (currentIndex + 1) % playerCount
     }
     
+    func previousPlayer(currentIndex: Int, playerCount: Int) -> Int {
+        return (currentIndex - 1 + playerCount) % playerCount
+    }
+    
     func registerVote(playerID: String, choice: String, totalPlayers: Int) {
         if let uuid = UUID(uuidString: playerID), !isPlayerVoted(uuid) {
             votes[choice, default: []].append(uuid)

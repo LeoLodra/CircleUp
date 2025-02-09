@@ -13,6 +13,7 @@ protocol GameInteractorProtocol {
     func getRandomQuestion(for type: ActivityType) -> Question?
     func resetActivities()
     func nextPlayer(currentIndex: Int, playerCount: Int) -> Int
+    func previousPlayer(currentIndex: Int, playerCount: Int) -> Int
     
     func registerVote(playerID: String, choice: String, totalPlayers: Int)
     func getPlayerName(from id: UUID, players: [Player]) -> String
@@ -24,7 +25,7 @@ protocol CardInteractorProtocol {
     func drawCard(for player: Player) -> Card?
     func saveCard(card: Card, for player: inout Player)
     func playSavedCard(card: Card, for player: inout Player)
-//    func applyCardEffect(card: Card, to player: inout Player)
+    func applyCardEffect(card: Card, to gamePresenter: GamePresenter)
 }
 
 protocol QuestionInteractorProtocol {

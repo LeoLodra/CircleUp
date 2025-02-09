@@ -46,13 +46,14 @@ struct GameBoardView: View {
                     HStack {
                         if gamePresenter.currentActivity == nil {
                             //                            Button("Select Activity") {
-                            CasinoRollView(gamePresenter: gamePresenter)
+                            RollView(gamePresenter: gamePresenter)
                             //                            }
                                 .buttonStyle(GameButtonStyle(color: .green))
                             Button("Wild Cards") {
                                 cardPresenter.drawCard()
                             }
                             .buttonStyle(GameButtonStyle(color: .yellow))
+                            .disabled(gamePresenter.currentPlayer.hand.count >= 2)
                         }
                     }
                 }

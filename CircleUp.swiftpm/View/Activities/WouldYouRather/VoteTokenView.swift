@@ -12,7 +12,7 @@ struct VoteTokenView: View {
     @ObservedObject var presenter: GamePresenter
 
     var body: some View {
-        Text(player.name.prefix(1)) // Show player initial as token
+        Text(getInitials(from: player.name))
             .font(.title)
             .frame(width: 50, height: 50)
             .background(presenter.isPlayerVoted(player.id) ? Color.gray.opacity(0.5) : Color.blue.opacity(0.8))
@@ -22,4 +22,10 @@ struct VoteTokenView: View {
             .draggable(player.id.uuidString)
             .disabled(presenter.isPlayerVoted(player.id))
     }
+}
+
+func getInitials(from fullName: String) -> String {
+    let nameComponents = fullName.split(separator: " ")
+    let initials = nameComponents.prefix(2).map { $0.prefix(1) }
+    return initials.joined().uppercased()
 }

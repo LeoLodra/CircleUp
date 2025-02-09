@@ -27,7 +27,6 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
             Player(name: name)
         }
         currentPlayerIndex = 0
-        //        currentCard = nil
     }
     
     var currentPlayer: Player {
@@ -46,7 +45,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
             currentActivity = allActivities[currentIndex]
             try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
         }
-
+        
         guard let selectedActivity = interactor.getRandomActivity() else {
             currentActivity = nil
             return
@@ -54,7 +53,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         currentActivity = selectedActivity
         
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-
+        
         let possibleQuestions = interactor.getAvailableQuestions(for: selectedActivity)
         
         let totalQuestionRolls = Int(1.5 / interval)
@@ -63,7 +62,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
             currentQuestion = possibleQuestions[questionIndex]
             try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
         }
-
+        
         if let finalQuestion = interactor.getRandomQuestion(for: selectedActivity) {
             if selectedActivity == .mostLikely {
                 currentQuestion = Question(
@@ -76,11 +75,13 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
             }
         }
     }
-
     
     func nextPlayer() {
-        currentPlayerIndex = interactor.nextPlayer(currentIndex: currentPlayerIndex, playerCount: players.count)
-        //        currentCard = nil
+        if isReversed {
+            currentPlayerIndex = interactor.previousPlayer(currentIndex: currentPlayerIndex, playerCount: players.count)
+        } else {
+            currentPlayerIndex = interactor.nextPlayer(currentIndex: currentPlayerIndex, playerCount: players.count)
+        }
     }
     
     func resetActivities() {
@@ -104,5 +105,28 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     
     func getPlayerName(from id: UUID) -> String {
         return interactor.getPlayerName(from: id, players: players)
+    }
+    
+    
+    //
+    // Wild Card Effects
+    //
+    
+    private var isReversed = false
+    
+    func skipCurrentTurn() {
+        nextPlayer()
+    }
+    
+    func grantImmunity() {
+        // Prevent the current player from having to answer
+    }
+    
+    func reverseTurnOrder() {
+        isReversed.toggle()
+    }
+    
+    func swapQuestion() {
+        currentQuestion = interactor.getRandomQuestion(for: currentActivity!)
     }
 }
