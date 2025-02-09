@@ -8,7 +8,7 @@
 enum ActivityType: String, CaseIterable {
     case mostLikely = "Most Likely"
     case wouldYouRather = "Would You Rather"
-//    case quickChallenge = "Quick Challenge"
+    case quickChallenge = "Quick Challenge"
 //    case moodTalk = "Mood Talk"
     case truthOrDare = "Truth or Dare"
 //    case sayAnything = "Say Anything"

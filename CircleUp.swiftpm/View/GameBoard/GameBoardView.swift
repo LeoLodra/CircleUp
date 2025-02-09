@@ -44,20 +44,20 @@ struct GameBoardView: View {
                     }
                     
                     HStack {
-                        Button("Select Activity") {
-                            gamePresenter.selectRandomActivity()
+                        if gamePresenter.currentActivity == nil {
+                            Button("Select Activity") {
+                                gamePresenter.selectRandomActivity()
+                            }
+                            .buttonStyle(GameButtonStyle(color: .green))
+                            Button("Wild Cards") {
+                                cardPresenter.drawCard()
+                            }
+                            .buttonStyle(GameButtonStyle(color: .yellow))
                         }
-                        .buttonStyle(GameButtonStyle(color: .green))
-                        
-                        Button("Wild Cards") {
-                            cardPresenter.drawCard()
-                        }
-                        .buttonStyle(GameButtonStyle(color: .yellow))
-                        
-                        Button("Next Player") {
-                            gamePresenter.nextPlayer()
-                        }
-                        .buttonStyle(GameButtonStyle(color: .blue))
+//                        Button("Next Player") {
+//                            gamePresenter.nextPlayer()
+//                        }
+//                        .buttonStyle(GameButtonStyle(color: .blue))
                     }
                 }
                 .rotationEffect(

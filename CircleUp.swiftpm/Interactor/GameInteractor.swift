@@ -7,10 +7,16 @@
 
 import Foundation
 
+protocol GameInteractorDelegate: AnyObject {
+    func didEndVoting()
+}
+
 final class GameInteractor: GameInteractorProtocol {
     private var activityDeck: [ActivityType: BaseQuestionInteractor] = [:]
     private var usedActivities: [ActivityType: [String]] = [:]
     private var votes: [String: [UUID]] = [:]
+    
+    weak var delegate: GameInteractorDelegate?
     
     init() {
         generateActivities()
@@ -46,6 +52,10 @@ final class GameInteractor: GameInteractorProtocol {
         return availableActivities.randomElement()
     }
     
+    func getAvailableActivities() -> [ActivityType] {
+        return Array(activityDeck.keys)
+    }
+    
     func getRandomQuestion(for type: ActivityType) -> Question? {
         return activityDeck[type]?.fetchQuestion()
     }
@@ -75,6 +85,8 @@ final class GameInteractor: GameInteractorProtocol {
     private func endVoting() {
         // Notify presenter via delegate or completion handler
         print("Voting Complete: \(votes)")
+        votes.removeAll()
+        delegate?.didEndVoting() // Notify the presenter
     }
     
     func getVotes() -> [String: [UUID]] {

@@ -7,11 +7,7 @@
 
 import Foundation
 
-//enum CardAction {
-//    case saved, played
-//}
-
-final class GamePresenter: GamePresenterProtocol {
+final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     @Published var players: [Player] = []
     @Published var currentPlayerIndex: Int = 0
     @Published var currentActivity: ActivityType?
@@ -23,6 +19,7 @@ final class GamePresenter: GamePresenterProtocol {
     
     init(interactor: GameInteractorProtocol) {
         self.interactor = interactor
+        (interactor as? GameInteractor)?.delegate = self
     }
     
     func setupPlayers(names: [String]) {
@@ -43,8 +40,18 @@ final class GamePresenter: GamePresenterProtocol {
             currentQuestion = nil
             return
         }
+        
+        if activity == .mostLikely {
+            currentQuestion = Question(
+                title: question.title,
+                options: players.map { $0.name },
+                type: question.type
+            )
+        } else {
+            currentQuestion = question
+        }
+        
         currentActivity = activity
-        currentQuestion = question
     }
     
     func nextPlayer() {
@@ -63,6 +70,12 @@ final class GamePresenter: GamePresenterProtocol {
     func registerVote(playerID: String, choice: String) {
         interactor.registerVote(playerID: playerID, choice: choice, totalPlayers: players.count)
         self.votes = interactor.getVotes() // Sync votes from interactor
+    }
+    
+    func didEndVoting() {
+        currentActivity = nil
+        currentQuestion = nil
+        nextPlayer()
     }
     
     func getPlayerName(from id: UUID) -> String {

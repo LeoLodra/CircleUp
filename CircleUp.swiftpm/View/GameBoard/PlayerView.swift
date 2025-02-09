@@ -39,8 +39,13 @@ struct PlayerView: View {
                 .padding(8)
                 .background(Capsule().fill(Color.blue.opacity(0.8)))
                 .foregroundColor(.white)
-            if let _ = gamePresenter.currentQuestion {
-                VoteTokenView(player: player, presenter: gamePresenter)
+            if let currentQuestion = gamePresenter.currentQuestion {
+//                if currentQuestion.type == .wouldYouRather {
+                    VoteTokenView(player: player, presenter: gamePresenter)
+//                }
+//                else if currentQuestion.type == .mostLikely {
+//                    //
+//                }
             }
         }
         .frame(width: 300, height: 300)

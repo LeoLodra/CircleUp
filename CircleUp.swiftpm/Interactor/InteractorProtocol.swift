@@ -9,6 +9,7 @@ import Foundation
 
 protocol GameInteractorProtocol {
     func getRandomActivity() -> ActivityType?
+    func getAvailableActivities() -> [ActivityType]
     func getRandomQuestion(for type: ActivityType) -> Question?
     func resetActivities()
     func nextPlayer(currentIndex: Int, playerCount: Int) -> Int
