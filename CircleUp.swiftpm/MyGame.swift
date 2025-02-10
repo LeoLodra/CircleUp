@@ -6,7 +6,7 @@ struct MyGame: App {
         WindowGroup {
             let gameInteractor = GameInteractor()
             let cardInteractor = CardInteractor()
-            let gamePresenter = GamePresenter(interactor: gameInteractor)
+            let gamePresenter = GamePresenter(interactor: gameInteractor, cardInteractor: cardInteractor)
             let cardPresenter = CardPresenter(interactor: cardInteractor, gamePresenter: gamePresenter)
             let router = GameRouter()
 

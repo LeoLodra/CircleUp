@@ -19,9 +19,8 @@ final class CardInteractor: CardInteractorProtocol {
     private func generateWildCards() {
         wildCards = [
             addCards(Card(title: "Skip", description: "Skip your turn", effect: .skipTurn), count: 2),
-            addCards(Card(title: "Immunity", description: "Ignore a question / activity", effect: .ignoreActivity), count: 2),
             addCards(Card(title: "Reverse Order", description: "Reverse turn order", effect: .reverseOrder), count: 2),
-            addCards(Card(title: "Swap", description: "Change the current question / activity", effect: .swapQuestion), count: 2)
+            addCards(Card(title: "Swap", description: "Change the current question / activity", effect: .swapActivity), count: 2)
         ].flatMap { $0 }.shuffled()
     }
     
@@ -30,16 +29,9 @@ final class CardInteractor: CardInteractorProtocol {
         return wildCards.removeFirst()
     }
     
-    func applyCardEffect(card: Card, to gamePresenter: GamePresenter) {
-            switch card.effect {
-            case .skipTurn:
-                gamePresenter.skipCurrentTurn()
-            case .ignoreActivity:
-                gamePresenter.grantImmunity()
-            case .reverseOrder:
-                gamePresenter.reverseTurnOrder()
-            case .swapQuestion:
-                gamePresenter.swapQuestion()
+    func applyCardEffect(card: Card, action: @escaping @MainActor () -> Void) {
+            Task { @MainActor in
+                action()
             }
         }
     

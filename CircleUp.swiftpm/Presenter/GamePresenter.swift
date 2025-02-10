@@ -16,9 +16,11 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     @Published var votes: [String: [UUID]] = [:]
     
     private let interactor: GameInteractorProtocol
+    private let cardInteractor: CardInteractorProtocol
     
-    init(interactor: GameInteractorProtocol) {
+    init(interactor: GameInteractorProtocol, cardInteractor: CardInteractorProtocol) {
         self.interactor = interactor
+        self.cardInteractor = cardInteractor
         (interactor as? GameInteractor)?.delegate = self
     }
     
@@ -115,18 +117,18 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     private var isReversed = false
     
     func skipCurrentTurn() {
-        nextPlayer()
-    }
-    
-    func grantImmunity() {
-        // Prevent the current player from having to answer
+        didEndVoting()
     }
     
     func reverseTurnOrder() {
         isReversed.toggle()
     }
     
-    func swapQuestion() {
-        currentQuestion = interactor.getRandomQuestion(for: currentActivity!)
+    @MainActor
+    func swapActivity() async {
+        currentActivity = nil
+        currentQuestion = nil
+        
+        await rollRandomActivity()
     }
 }

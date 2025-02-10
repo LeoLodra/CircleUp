@@ -9,7 +9,6 @@ import Foundation
 
 final class CardPresenter: CardPresenterProtocol {
     @Published var currentCard: Card?
-//    @Published var currentCardAction: CardAction?
     
     private let interactor: CardInteractorProtocol
     private var gamePresenter: GamePresenter
@@ -26,8 +25,8 @@ final class CardPresenter: CardPresenterProtocol {
         }
         
         currentCard = card
-        print("card", currentCard)
         saveCard()
+        gamePresenter.nextPlayer()
     }
 
     func saveCard() {
@@ -36,10 +35,41 @@ final class CardPresenter: CardPresenterProtocol {
         interactor.saveCard(card: card, for: &gamePresenter.players[playerIndex])
         currentCard = nil
     }
+    
+    @MainActor
+    func playCard(card: Card) {
+        interactor.applyCardEffect(card: card) { [weak self] in
+            guard let presenter = self?.gamePresenter else { return }
+            switch card.effect {
+            case .skipTurn:
+                presenter.skipCurrentTurn()
+            case .reverseOrder:
+                presenter.reverseTurnOrder()
+            case .swapActivity:
+                Task { await presenter.swapActivity() }
+            case .teamUp: break
+                //
+            case .stealWild: break
+                //
+            case .majorityRules: break
+                //
+            }
+        }
+    }
 
+    @MainActor
     func playSavedCard(_ card: Card) {
         guard let playerIndex = gamePresenter.players.firstIndex(where: { $0.id == gamePresenter.currentPlayer.id }) else { return }
-        interactor.applyCardEffect(card: card, to: gamePresenter)
+        guard let _ = gamePresenter.currentPlayer.hand.firstIndex(where: { $0.id == card.id }) else { return }
+        print("Playing saved card: \(card)")
+        if card.effect == .swapActivity {
+            if gamePresenter.currentQuestion == nil {
+                print("There is no question to swap")
+                //MARK: Add response in UI or Disable if nil
+                return
+            }
+        }
+        playCard(card: card)
         interactor.playSavedCard(card: card, for: &gamePresenter.players[playerIndex])
     }
 }
