@@ -12,6 +12,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     @Published var currentPlayerIndex: Int = 0
     @Published var currentActivity: ActivityType?
     @Published var currentQuestion: Question?
+    @Published var isRolling: Bool = false
     
     @Published var votes: [String: [UUID]] = [:]
     
@@ -37,6 +38,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     
     @MainActor
     func rollRandomActivity() async {
+        isRolling = true
         let allActivities = ActivityType.allCases
         let rollDuration: Double = 2.0
         let interval: Double = 0.1
@@ -66,6 +68,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         }
         
         if let finalQuestion = interactor.getRandomQuestion(for: selectedActivity) {
+            isRolling = false
             if selectedActivity == .mostLikely {
                 currentQuestion = Question(
                     title: finalQuestion.title,
@@ -130,5 +133,17 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         currentQuestion = nil
         
         await rollRandomActivity()
+    }
+    
+    func teamUp() {
+        
+    }
+    
+    func stealWild() {
+        
+    }
+    
+    func majorityRules() {
+        
     }
 }

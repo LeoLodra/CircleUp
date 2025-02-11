@@ -25,7 +25,12 @@ final class GameInteractor: GameInteractorProtocol {
     private func generateActivities() {
         activityDeck = [
             .mostLikely: MostLikelyInteractor(),
-            .wouldYouRather: WouldYouRatherInteractor()
+            .wouldYouRather: WouldYouRatherInteractor(),
+            .quickChallenge: QuickChallengeInteractor(),
+            .charades: CharadesInteractor(),
+            .moodTalk: MoodTalkInteractor(),
+            .whichOne: WhichOneInteractor(),
+            .whatWouldYouDo: WhatWouldYouDoInteractor()
         ]
     }
     

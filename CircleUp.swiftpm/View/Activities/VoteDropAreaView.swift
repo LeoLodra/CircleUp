@@ -33,7 +33,7 @@ struct VoteDropAreaView: View {
         }
         .frame(width: 150, height: 100)
         .onDrop(of: [.text], isTargeted: nil) { providers in
-            providers.first?.loadObject(ofClass: String.self) { playerID, _ in
+            _ = providers.first?.loadObject(ofClass: String.self) { playerID, _ in
                 if let playerID = playerID {
                     DispatchQueue.main.async {
                         presenter.registerVote(playerID: playerID, choice: choice)

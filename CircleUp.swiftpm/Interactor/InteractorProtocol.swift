@@ -28,8 +28,3 @@ protocol CardInteractorProtocol {
 //    func applyCardEffect(card: Card, to gamePresenter: GamePresenter) async
     func applyCardEffect(card: Card, action: @escaping @MainActor () -> Void)
 }
-
-protocol QuestionInteractorProtocol {
-    func fetchQuestion() -> Question?
-    func processAnswer(for question: Question, choice: String)
-}

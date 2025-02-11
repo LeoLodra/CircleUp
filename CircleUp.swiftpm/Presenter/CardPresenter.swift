@@ -37,7 +37,7 @@ final class CardPresenter: CardPresenterProtocol {
     }
     
     @MainActor
-    func playCard(card: Card) {
+    func applyCardEffect(card: Card) {
         interactor.applyCardEffect(card: card) { [weak self] in
             guard let presenter = self?.gamePresenter else { return }
             switch card.effect {
@@ -62,6 +62,9 @@ final class CardPresenter: CardPresenterProtocol {
         guard let playerIndex = gamePresenter.players.firstIndex(where: { $0.id == gamePresenter.currentPlayer.id }) else { return }
         guard let _ = gamePresenter.currentPlayer.hand.firstIndex(where: { $0.id == card.id }) else { return }
         print("Playing saved card: \(card)")
+        if gamePresenter.isRolling {
+            return
+        }
         if card.effect == .swapActivity {
             if gamePresenter.currentQuestion == nil {
                 print("There is no question to swap")
@@ -69,7 +72,7 @@ final class CardPresenter: CardPresenterProtocol {
                 return
             }
         }
-        playCard(card: card)
+        applyCardEffect(card: card)
         interactor.playSavedCard(card: card, for: &gamePresenter.players[playerIndex])
     }
 }

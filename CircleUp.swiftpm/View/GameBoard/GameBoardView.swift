@@ -29,11 +29,19 @@ struct GameBoardView: View {
                                 .font(.body)
                                 .padding()
                             HStack {
-                                if let options = question.options {
-                                    ForEach(options, id: \.self) { option in
-                                        VoteDropAreaView(choice: option, presenter: gamePresenter)
+                                if !gamePresenter.isRolling {
+                                    if let options = question.options {
+                                        ForEach(options, id: \.self) { option in
+                                            VoteDropAreaView(choice: option, presenter: gamePresenter)
+                                        }
+                                    } else {
+                                        Button("End Turn") {
+                                            gamePresenter.didEndVoting()
+                                        }
+                                        .buttonStyle(GameButtonStyle(color: .red))
                                     }
                                 }
+                                
                             }
                             .padding()
                         }
@@ -45,9 +53,7 @@ struct GameBoardView: View {
                     
                     HStack {
                         if gamePresenter.currentActivity == nil {
-                            //                            Button("Select Activity") {
                             RollView(gamePresenter: gamePresenter)
-                            //                            }
                                 .buttonStyle(GameButtonStyle(color: .green))
                             Button("Wild Cards") {
                                 cardPresenter.drawCard()

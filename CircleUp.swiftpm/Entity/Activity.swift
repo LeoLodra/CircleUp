@@ -8,10 +8,11 @@
 enum ActivityType: String, CaseIterable {
     case mostLikely = "Most Likely"
     case wouldYouRather = "Would You Rather"
-    case quickChallenge = "Quick Challenge"
+    case quickChallenge = "Quick Challenge" // NOT DONE: Add Timer
     case moodTalk = "Mood Talk"
-    case truthOrDare = "Truth or Dare"
     case charades = "Charades"
+    case whichOne = "Which One?"
+    case whatWouldYouDo = "What Would You Do?" // NOT DONE
 }
 
 struct Activity {

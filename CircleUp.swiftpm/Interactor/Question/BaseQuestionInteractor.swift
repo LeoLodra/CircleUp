@@ -9,20 +9,16 @@
 import Foundation
 
 class BaseQuestionInteractor {
-    private var questions: [ActivityType: [Question]] = [
-        .mostLikely: [
-            Question(title: "Who is most likely to survive a zombie apocalypse?", options: nil, type: .mostLikely),
-            Question(title: "Who is most likely to forget their own birthday?", options: nil, type: .mostLikely)
-        ],
-        .wouldYouRather: [
-            Question(title: "Would you rather always be 10 minutes late or 20 minutes early?", options: ["10 minutes late", "20 minutes early"], type: .wouldYouRather),
-            Question(title: "Would you rather have unlimited money or unlimited time?", options: ["Unlimited Money", "Unlimited Time"], type: .wouldYouRather)
-        ]
-    ]
+    private var questions: [ActivityType: [Question]] = [:]
+    
+    init(questions: [ActivityType: [Question]]) {
+        self.questions = questions
+    }
     
     func fetchQuestion(for type: ActivityType) -> Question? {
         guard var activityQuestions = questions[type], !activityQuestions.isEmpty else { return nil }
-        let question = activityQuestions.removeFirst()
+        let randomIndex = Int.random(in: 0..<activityQuestions.count)
+        let question = activityQuestions.remove(at: randomIndex)
         questions[type] = activityQuestions // Update the dictionary after removal
         return question
     }

@@ -17,8 +17,8 @@ struct Card: Identifiable {
 enum CardEffect {
     case skipTurn
     case reverseOrder
-    case teamUp //Pick a player to help you complete a challenge
-    case stealWild
+    case teamUp // NOT DONE: Pick a player to help you complete a challenge
+    case stealWild // NOT DONE
     case swapActivity
-    case majorityRules //The most common answer wins; those who answer differently get a challenge.
+    case majorityRules // NODE DONE: The most common answer wins; those who answer differently get a challenge.
 }
