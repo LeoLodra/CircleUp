@@ -17,6 +17,7 @@ protocol GameInteractorProtocol {
     
     func registerVote(playerID: String, choice: String, totalPlayers: Int)
     func getPlayerName(from id: UUID, players: [Player]) -> String
+    func clearVotes()
     func getVotes() -> [String: [UUID]]
     func isPlayerVoted(_ playerID: UUID) -> Bool
 }

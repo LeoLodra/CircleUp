@@ -13,6 +13,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     @Published var currentActivity: ActivityType?
     @Published var currentQuestion: Question?
     @Published var isRolling: Bool = false
+    @Published var turnDone: Bool = false
     
     @Published var votes: [String: [UUID]] = [:]
     
@@ -40,7 +41,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     func rollRandomActivity() async {
         isRolling = true
         let allActivities = ActivityType.allCases
-        let rollDuration: Double = 2.0
+        let rollDuration: Double = 1.0
         let interval: Double = 0.1
         let totalRolls = Int(rollDuration / interval)
         
@@ -103,8 +104,14 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     }
     
     func didEndVoting() {
+        turnDone = true
+    }
+    
+    func endTurn() {
         currentActivity = nil
         currentQuestion = nil
+        turnDone = false
+        interactor.clearVotes()
         nextPlayer()
     }
     
@@ -120,7 +127,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     private var isReversed = false
     
     func skipCurrentTurn() {
-        didEndVoting()
+        endTurn()
     }
     
     func reverseTurnOrder() {

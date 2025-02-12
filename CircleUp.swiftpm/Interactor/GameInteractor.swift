@@ -24,11 +24,11 @@ final class GameInteractor: GameInteractorProtocol {
     
     private func generateActivities() {
         activityDeck = [
-            .mostLikely: MostLikelyInteractor(),
-            .wouldYouRather: WouldYouRatherInteractor(),
-            .quickChallenge: QuickChallengeInteractor(),
-            .charades: CharadesInteractor(),
-            .moodTalk: MoodTalkInteractor(),
+//            .mostLikely: MostLikelyInteractor(),
+//            .wouldYouRather: WouldYouRatherInteractor(),
+//            .quickChallenge: QuickChallengeInteractor(),
+//            .charades: CharadesInteractor(),
+//            .moodTalk: MoodTalkInteractor(),
             .whichOne: WhichOneInteractor(),
             .whatWouldYouDo: WhatWouldYouDoInteractor()
         ]
@@ -75,13 +75,16 @@ final class GameInteractor: GameInteractorProtocol {
     
     private func endVoting() {
         // Notify presenter via delegate or completion handler
-        print("Voting Complete: \(votes)")
-        votes.removeAll()
         delegate?.didEndVoting() // Notify the presenter
     }
     
     func getVotes() -> [String: [UUID]] {
         return votes
+    }
+    
+    func clearVotes() {
+        print("Voting Complete: \(votes)")
+        votes.removeAll()
     }
     
     func isPlayerVoted(_ playerID: UUID) -> Bool {

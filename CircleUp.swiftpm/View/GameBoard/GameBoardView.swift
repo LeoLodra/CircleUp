@@ -28,20 +28,29 @@ struct GameBoardView: View {
                             Text(question.title)
                                 .font(.body)
                                 .padding()
-                            HStack {
+                            VStack {
                                 if !gamePresenter.isRolling {
                                     if let options = question.options {
-                                        ForEach(options, id: \.self) { option in
-                                            VoteDropAreaView(choice: option, presenter: gamePresenter)
+                                        HStack {
+                                            if let insights = question.insights {
+                                                ForEach(Array(zip(options, insights)), id: \.0) { (option, insight) in
+                                                    VoteDropAreaView(choice: option, insight: insight, presenter: gamePresenter)
+                                                }
+                                            } else {
+                                                ForEach(options, id: \.self) { option in
+                                                    VoteDropAreaView(choice: option, insight: nil, presenter: gamePresenter)
+                                                }
+                                            }
                                         }
-                                    } else {
+                                    }
+                                    
+                                    if gamePresenter.turnDone || question.options == nil {
                                         Button("End Turn") {
-                                            gamePresenter.didEndVoting()
+                                            gamePresenter.endTurn()
                                         }
                                         .buttonStyle(GameButtonStyle(color: .red))
                                     }
                                 }
-                                
                             }
                             .padding()
                         }

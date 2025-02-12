@@ -12,7 +12,7 @@ enum ActivityType: String, CaseIterable {
     case moodTalk = "Mood Talk"
     case charades = "Charades"
     case whichOne = "Which One?"
-    case whatWouldYouDo = "What Would You Do?" // NOT DONE
+    case whatWouldYouDo = "What Would You Do?"
 }
 
 struct Activity {

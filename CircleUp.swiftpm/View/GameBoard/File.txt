@@ -1,0 +1,14 @@
+if let options = question.options {
+        HStack {
+            ForEach(options, id: \.self) { option in
+                VoteDropAreaView(choice: option, presenter: gamePresenter)
+            }
+        }
+    }
+
+    if gamePresenter.turnDone || question.options == nil {
+        Button("End Turn") {
+            gamePresenter.endTurn()
+        }
+        .buttonStyle(GameButtonStyle(color: .red))
+    }

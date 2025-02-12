@@ -9,16 +9,26 @@ import SwiftUI
 
 struct VoteDropAreaView: View {
     let choice: String
+    let insight: String?
     @ObservedObject var presenter: GamePresenter
     
     var body: some View {
         VStack {
-            Text(choice)
-                .font(.title)
-                .padding()
-                .background(Color.gray.opacity(0.3))
-                .cornerRadius(12)
-                .frame(width: 150, height: 100)
+            if let insight = insight, presenter.turnDone {
+                Text(insight)
+                    .font(.title)
+                    .padding()
+                    .background(Color.gray.opacity(0.3))
+                    .cornerRadius(12)
+                    .frame(width: 150, height: 100)
+            } else {
+                Text(choice)
+                    .font(.title)
+                    .padding()
+                    .background(Color.gray.opacity(0.3))
+                    .cornerRadius(12)
+                    .frame(width: 150, height: 100)
+            }
             // Show votes in this area
             HStack {
                 ForEach(presenter.votes[choice] ?? [], id: \.self) { playerID in
