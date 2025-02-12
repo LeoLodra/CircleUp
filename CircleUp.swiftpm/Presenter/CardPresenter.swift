@@ -12,7 +12,7 @@ final class CardPresenter: CardPresenterProtocol {
     
     private let interactor: CardInteractorProtocol
     private var gamePresenter: GamePresenter
-
+    
     init(interactor: CardInteractorProtocol, gamePresenter: GamePresenter) {
         self.interactor = interactor
         self.gamePresenter = gamePresenter
@@ -28,7 +28,7 @@ final class CardPresenter: CardPresenterProtocol {
         saveCard()
         gamePresenter.nextPlayer()
     }
-
+    
     func saveCard() {
         guard let card = currentCard else { return }
         guard let playerIndex = gamePresenter.players.firstIndex(where: { $0.id == gamePresenter.currentPlayer.id }) else { return }
@@ -47,16 +47,16 @@ final class CardPresenter: CardPresenterProtocol {
                 presenter.reverseTurnOrder()
             case .swapActivity:
                 Task { await presenter.swapActivity() }
-            case .teamUp: break
-                //
-            case .stealWild: break
-                //
+            case .teamUp:
+                presenter.startPlayerSelection(card: card)
+            case .stealWild:
+                presenter.startPlayerSelection(card: card)
             case .majorityRules: break
                 //
             }
         }
     }
-
+    
     @MainActor
     func playSavedCard(_ card: Card) {
         guard let playerIndex = gamePresenter.players.firstIndex(where: { $0.id == gamePresenter.currentPlayer.id }) else { return }

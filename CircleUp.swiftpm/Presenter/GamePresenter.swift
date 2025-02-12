@@ -135,12 +135,31 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         await rollRandomActivity()
     }
     
-    func teamUp() {
-        
+    @Published var selectPlayerFor: CardEffect?
+    func startPlayerSelection(card: Card) {
+        if card.effect == .teamUp {
+            selectPlayerFor = .teamUp
+        } else if card.effect == .stealWild {
+            selectPlayerFor = .stealWild
+        }
     }
     
-    func stealWild() {
+    func teamUp(with player: Player) {
+//        guard let index = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
+        print("teaming up with \(player.name)")
+        selectPlayerFor = nil
+    }
+    
+    func stealWildCard(from player: Player) {
+        guard let stolenCardIndex = player.hand.firstIndex(where: { _ in true }),
+              let victimIndex = players.firstIndex(where: { $0.id == player.id }),
+              let thiefIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else {
+            return
+        }
         
+        let stolenCard = players[victimIndex].hand.remove(at: stolenCardIndex) // Remove only one instance
+        players[thiefIndex].hand.append(stolenCard)
+        selectPlayerFor = nil
     }
     
     func majorityRules() {

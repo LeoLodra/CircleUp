@@ -39,7 +39,18 @@ struct PlayerView: View {
                 .padding(8)
                 .background(Capsule().fill(Color.blue.opacity(0.8)))
                 .foregroundColor(.white)
-            if gamePresenter.currentActivity == .mostLikely || gamePresenter.currentActivity == .wouldYouRather || gamePresenter.currentActivity == .whichOne {
+            //MARK: Temporary UI
+            if gamePresenter.selectPlayerFor != nil && gamePresenter.currentPlayer.id != player.id {
+                Button("Select") {
+                    if gamePresenter.selectPlayerFor == .teamUp {
+                        gamePresenter.teamUp(with: player)
+                    } else if gamePresenter.selectPlayerFor == .stealWild {
+                        gamePresenter.stealWildCard(from: player)
+                    }
+                }
+                .buttonStyle(GameButtonStyle(color: .yellow))
+            }
+            if gamePresenter.currentActivity == .mostLikely || gamePresenter.currentActivity == .wouldYouRather || gamePresenter.currentActivity == .whichOne || gamePresenter.currentActivity == .whatWouldYouDo {
                 if !gamePresenter.isRolling {
                     VoteTokenView(player: player, presenter: gamePresenter)
                 }

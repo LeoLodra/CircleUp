@@ -6,12 +6,6 @@ struct RollView: View {
 
     var body: some View {
         VStack {
-//            Text(isRolling ? "Rolling..." : gamePresenter.currentActivity?.rawValue ?? "Tap to roll!")
-//                .font(.largeTitle)
-//                .bold()
-//                .transition(.opacity)
-//                .animation(.easeInOut, value: gamePresenter.currentActivity)
-            
             Button("Roll Activity") {
                 startRollingAnimation()
             }
