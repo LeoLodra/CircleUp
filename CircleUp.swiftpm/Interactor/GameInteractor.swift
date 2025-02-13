@@ -29,7 +29,7 @@ final class GameInteractor: GameInteractorProtocol {
 //            .quickChallenge: QuickChallengeInteractor(),
 //            .charades: CharadesInteractor(),
 //            .moodTalk: MoodTalkInteractor(),
-            .whichOne: WhichOneInteractor(),
+//            .whichOne: WhichOneInteractor(),
             .whatWouldYouDo: WhatWouldYouDoInteractor()
         ]
     }

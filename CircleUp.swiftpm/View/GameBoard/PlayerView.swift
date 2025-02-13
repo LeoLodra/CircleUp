@@ -13,33 +13,59 @@ struct PlayerView: View {
     let player: Player
     
     var body: some View {
-        VStack {
-            if !player.hand.isEmpty {
-                HStack {
-                    ForEach(player.hand, id: \.id) { card in
-                        VStack {
-                            Text(card.title)
-                                .font(.subheadline)
-                                .padding(4)
-                                .background(Color.orange.opacity(0.7))
-                                .cornerRadius(6)
-                                .foregroundColor(.white)
-                            
-                            Button("Play") {
-                                cardPresenter.playSavedCard(card)
-                            }
-                            .buttonStyle(GameButtonStyle(color: .green))
+        ZStack {
+            Rectangle()
+                .frame(width: 300, height: 120)
+                .foregroundColor(.backgroundSecondary)
+                .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(gamePresenter.currentPlayer == player ? player.color : Color.clear, lineWidth: 4) // Add a glowing border
+                )
+                .shadow(color: gamePresenter.currentPlayer == player ? player.color : Color.clear, radius: 10) // Add a soft glow
+            HStack {
+                if player.hand.count > 0 {
+                    VStack {
+                        Text(player.hand[0].title)
+                            .font(.subheadline)
+                            .padding(4)
+                            .background(Color.orange.opacity(0.7))
+                            .cornerRadius(6)
+                            .foregroundColor(.white)
+                        
+                        Button("Play") {
+                            cardPresenter.playSavedCard(player.hand[0])
                         }
+                        .buttonStyle(GameButtonStyle(color: .green))
+                    }
+                }
+                
+                VStack {
+                    Text("\(player.name)")
+                        .font(.custom("Chalkboard SE", size: 20))
+                        .foregroundColor(.lightText)
+                    
+                    VoteTokenView(player: player, presenter: gamePresenter)
+                }
+                
+                if player.hand.count > 1 {
+                    VStack {
+                        Text(player.hand[1].title)
+                            .font(.subheadline)
+                            .padding(4)
+                            .background(Color.orange.opacity(0.7))
+                            .cornerRadius(6)
+                            .foregroundColor(.white)
+                        
+                        Button("Play") {
+                            cardPresenter.playSavedCard(player.hand[1])
+                        }
+                        .buttonStyle(GameButtonStyle(color: .green))
                     }
                 }
             }
-            
-            Text(player.name)
-                .font(.headline)
-                .padding(8)
-                .background(Capsule().fill(Color.blue.opacity(0.8)))
-                .foregroundColor(.white)
-            //MARK: Temporary UI
+        }
+        VStack {
             if gamePresenter.selectPlayerFor != nil && gamePresenter.currentPlayer.id != player.id {
                 Button("Select") {
                     if gamePresenter.selectPlayerFor == .teamUp {
@@ -48,12 +74,7 @@ struct PlayerView: View {
                         gamePresenter.stealWildCard(from: player)
                     }
                 }
-                .buttonStyle(GameButtonStyle(color: .yellow))
-            }
-            if gamePresenter.currentActivity == .mostLikely || gamePresenter.currentActivity == .wouldYouRather || gamePresenter.currentActivity == .whichOne || gamePresenter.currentActivity == .whatWouldYouDo {
-                if !gamePresenter.isRolling {
-                    VoteTokenView(player: player, presenter: gamePresenter)
-                }
+                .buttonStyle(GameButtonStyle(color: .buttonOrange))
             }
         }
         .frame(width: 300, height: 300)

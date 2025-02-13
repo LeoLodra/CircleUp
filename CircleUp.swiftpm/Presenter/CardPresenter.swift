@@ -51,8 +51,6 @@ final class CardPresenter: CardPresenterProtocol {
                 presenter.startPlayerSelection(card: card)
             case .stealWild:
                 presenter.startPlayerSelection(card: card)
-            case .majorityRules: break
-                //
             }
         }
     }

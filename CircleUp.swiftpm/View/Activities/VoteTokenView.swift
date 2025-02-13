@@ -15,12 +15,11 @@ struct VoteTokenView: View {
         Text(getInitials(from: player.name))
             .font(.title)
             .frame(width: 50, height: 50)
-            .background(presenter.isPlayerVoted(player.id) ? Color.gray.opacity(0.5) : Color.blue.opacity(0.8))
+            .background(disableToken(presenter: presenter, player: player) ? Color.buttonDisabled : player.color)
             .cornerRadius(25)
-            .foregroundColor(.white)
-            .padding()
+            .foregroundColor(.lightText) // Set text color dynamically
             .draggable(player.id.uuidString)
-            .disabled(presenter.isPlayerVoted(player.id))
+            .disabled(disableToken(presenter: presenter, player: player))
     }
 }
 
@@ -28,4 +27,17 @@ func getInitials(from fullName: String) -> String {
     let nameComponents = fullName.split(separator: " ")
     let initials = nameComponents.prefix(2).map { $0.prefix(1) }
     return initials.joined().uppercased()
+}
+
+func disableToken(presenter: GamePresenter, player: Player) -> Bool {
+    if [.mostLikely, .wouldYouRather, .whichOne, .whatWouldYouDo].contains(presenter.currentActivity) {
+        if !presenter.isRolling && !presenter.isPlayerVoted(player.id) {
+            return false
+        }
+        if presenter.isPlayerVoted(player.id) {
+            return true
+        }
+    }
+    
+    return true
 }

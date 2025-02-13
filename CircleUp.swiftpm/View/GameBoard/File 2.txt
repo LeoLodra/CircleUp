@@ -1,7 +1,0 @@
-if let options = question.options, let insights = question.insights {
-    HStack {
-        ForEach(Array(zip(options, insights)), id: \.0) { (option, insight) in
-            VoteDropAreaView(choice: option, insight: insight, presenter: gamePresenter)
-        }
-    }
-}

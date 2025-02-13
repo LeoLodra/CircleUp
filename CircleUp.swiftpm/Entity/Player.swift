@@ -6,18 +6,11 @@
 //
 
 import Foundation
+import SwiftUICore
 
-enum PersonalityTrait: String, CaseIterable {
-    case bold = "Bold"
-    case thoughtful = "Thoughtful"
-    case funny = "Funny"
-    case competitive = "Competitive"
-    case empathetic = "Empathetic"
-}
-
-struct Player: Identifiable {
+struct Player: Identifiable, Equatable {
     var id = UUID()
     var name: String
-    var traits: [PersonalityTrait: Int] = [:]
     var hand: [Card] = []
+    var color: Color
 }

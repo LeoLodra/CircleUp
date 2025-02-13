@@ -17,18 +17,22 @@ struct GameBoardView: View {
             ZStack {
                 VStack {
                     Text("Current Player: \(gamePresenter.currentPlayer.name)")
-                        .font(.headline)
+                        .font(.custom("Chalkboard SE", size: 24))
+                        .foregroundColor(.lightText)
+                        .padding()
                     
                     if let activity = gamePresenter.currentActivity {
-                        Text("Activity: \(activity.rawValue)")
-                            .font(.title2)
-                            .padding()
+                        Text("\(activity.rawValue)")
+                            .font(.custom("Chalkboard SE", size: 30))
+                            .bold()
+                            .foregroundColor(.neonPink)
                         
                         if let question = gamePresenter.currentQuestion {
-                            Text(question.title)
-                                .font(.body)
-                                .padding()
                             VStack {
+                                Text(question.title)
+                                    .font(.custom("Chalkboard SE", size: 26))
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(.fadedText)
                                 if !gamePresenter.isRolling {
                                     if let options = question.options {
                                         HStack {
@@ -48,30 +52,31 @@ struct GameBoardView: View {
                                         Button("End Turn") {
                                             gamePresenter.endTurn()
                                         }
-                                        .buttonStyle(GameButtonStyle(color: .red))
+                                        .buttonStyle(GameButtonStyle(color: Color.buttonRed))
                                     }
                                 }
                             }
-                            .padding()
                         }
                     } else {
                         Text("Tap the button to start an activity!")
-                            .font(.body)
+                            .font(.custom("Chalkboard SE", size: 30))
+                            .foregroundColor(.neonPink)
                             .padding()
                     }
                     
                     HStack {
                         if gamePresenter.currentActivity == nil {
                             RollView(gamePresenter: gamePresenter)
-                                .buttonStyle(GameButtonStyle(color: .green))
+                                .buttonStyle(GameButtonStyle(color: .buttonGreen))
                             Button("Wild Cards") {
                                 cardPresenter.drawCard()
                             }
-                            .buttonStyle(GameButtonStyle(color: .yellow))
+                            .buttonStyle(GameButtonStyle(color: .buttonOrange))
                             .disabled(gamePresenter.currentPlayer.hand.count >= 2)
                         }
                     }
                 }
+                .frame(width: geometry.size.height * 0.7, alignment: .center)
                 .rotationEffect(
                     PositionCalculator.rotationForCurrentPlayer(
                         index: gamePresenter.currentPlayerIndex,
@@ -91,20 +96,9 @@ struct GameBoardView: View {
                         .position(position.point)
                 }
             }
+            
         }
         .padding()
-    }
-}
-
-struct GameButtonStyle: ButtonStyle {
-    var color: Color
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding()
-            .background(color.opacity(0.8))
-            .cornerRadius(8)
-            .foregroundColor(.white)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+        
     }
 }

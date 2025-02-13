@@ -13,10 +13,10 @@ struct PositionCalculator {
         var predefinedPositions: [(CGPoint, Angle)] = []
         let centerX = size.width / 2
         let centerY = size.height / 2
-        let leftX = size.width * 0.33
-        let topY = size.height * 0.33
-        let rightX = size.width * 0.66
-        let bottomY = size.height * 0.66
+        let leftX = size.width * 0.28
+        let topY = size.height * 0.28
+        let rightX = size.width * 0.72
+        let bottomY = size.height * 0.72
         let edgePadding: CGFloat = 50
         
         switch total {

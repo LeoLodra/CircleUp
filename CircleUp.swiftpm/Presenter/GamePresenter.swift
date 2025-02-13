@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUICore
 
 final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     @Published var players: [Player] = []
@@ -26,9 +27,9 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         (interactor as? GameInteractor)?.delegate = self
     }
     
-    func setupPlayers(names: [String]) {
-        players = names.map { name in
-            Player(name: name)
+    func setupPlayers(names: [String], colors: [Color]) {
+        players = zip(names, colors).map { name, color in
+            Player(name: name, color: color)
         }
         currentPlayerIndex = 0
     }
@@ -152,7 +153,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     }
     
     func teamUp(with player: Player) {
-//        guard let index = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
+        //        guard let index = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
         print("teaming up with \(player.name)")
         selectPlayerFor = nil
     }
@@ -167,9 +168,5 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         let stolenCard = players[victimIndex].hand.remove(at: stolenCardIndex) // Remove only one instance
         players[thiefIndex].hand.append(stolenCard)
         selectPlayerFor = nil
-    }
-    
-    func majorityRules() {
-        
     }
 }

@@ -16,18 +16,22 @@ struct VoteDropAreaView: View {
         VStack {
             if let insight = insight, presenter.turnDone {
                 Text(insight)
-                    .font(.title)
+                    .font(.custom("Chalkboard SE", size: 20))
                     .padding()
-                    .background(Color.gray.opacity(0.3))
+                    .background(Color.optionBackground)
+                    .foregroundColor(.lightText)
+                    .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .frame(width: 150, height: 100)
             } else {
                 Text(choice)
-                    .font(.title)
+                    .font(.custom("Chalkboard SE", size: 20))
                     .padding()
-                    .background(Color.gray.opacity(0.3))
+                    .background(Color.optionBackground)
+                    .foregroundColor(.lightText)
+                    .multilineTextAlignment(.center)
                     .cornerRadius(12)
-                    .frame(width: 150, height: 100)
+                    .frame(maxWidth: 200, maxHeight: 100) // ✅ Limits width but lets height expand
             }
             // Show votes in this area
             HStack {
@@ -35,7 +39,7 @@ struct VoteDropAreaView: View {
                     Text(getInitials(from: presenter.getPlayerName(from: playerID)))
                         .font(.body)
                         .padding(5)
-                        .background(Color.green.opacity(0.8))
+                        .background(Color.buttonBlue)
                         .cornerRadius(8)
                         .foregroundColor(.white)
                 }

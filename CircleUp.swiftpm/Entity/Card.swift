@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Card: Identifiable {
+struct Card: Identifiable, Equatable {
     var id = UUID()
     var title: String
     var description: String
@@ -17,8 +17,7 @@ struct Card: Identifiable {
 enum CardEffect {
     case skipTurn
     case reverseOrder
-    case teamUp // NOT DONE: What to do with the name (UI Problem)
+    case teamUp // NOT DONE: What to do with the name (UI Problem) ->.quick, .charades, .moodTalk
     case stealWild
     case swapActivity
-    case majorityRules // NOT DONE: The most common answer wins; those who answer differently get a challenge.
 }
