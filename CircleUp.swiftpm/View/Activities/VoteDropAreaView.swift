@@ -12,40 +12,69 @@ struct VoteDropAreaView: View {
     let insight: String?
     @ObservedObject var presenter: GamePresenter
     
+    var width: CGFloat {
+        if let activity = presenter.currentActivity {
+            if activity == .mostLikely {
+                return 120
+            }
+        }
+        return 200
+    }
+    
+    var height: CGFloat {
+        if let activity = presenter.currentActivity {
+            if activity == .mostLikely {
+                return 80
+            }
+        }
+        return 100
+    }
+    
     var body: some View {
-        VStack {
+        ZStack {
             if let insight = insight, presenter.turnDone {
                 Text(insight)
                     .font(.custom("Chalkboard SE", size: 20))
                     .padding()
+                    .frame(width: width, height: height)
                     .background(Color.optionBackground)
                     .foregroundColor(.lightText)
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
-                    .frame(width: 150, height: 100)
+                    .lineLimit(nil)
+                    .minimumScaleFactor(0.7)
             } else {
                 Text(choice)
                     .font(.custom("Chalkboard SE", size: 20))
                     .padding()
+                    .frame(width: width, height: height)
                     .background(Color.optionBackground)
                     .foregroundColor(.lightText)
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
-                    .frame(maxWidth: 200, maxHeight: 100) // ✅ Limits width but lets height expand
+                    .lineLimit(nil)
+                    .minimumScaleFactor(0.7)
             }
-            // Show votes in this area
-            HStack {
-                ForEach(presenter.votes[choice] ?? [], id: \.self) { playerID in
-                    Text(getInitials(from: presenter.getPlayerName(from: playerID)))
-                        .font(.body)
-                        .padding(5)
-                        .background(Color.buttonBlue)
-                        .cornerRadius(8)
-                        .foregroundColor(.white)
+            
+            VStack {
+                HStack{
+                    HStack {
+                        ForEach(presenter.votes[choice] ?? [], id: \.self) { playerID in
+                            let player = presenter.getPlayer(from: playerID)
+                            Text(getInitials(from: player.name))
+                                .font(.custom("SF Pro", size: 12))
+                                .padding(2)
+                                .background(player.color)
+                                .cornerRadius(12)
+                                .foregroundColor(.white)
+                        }
+                    }
+                    Spacer()
                 }
+                Spacer()
             }
         }
-        .frame(width: 150, height: 100)
+        .frame(width: width, height: height)
         .onDrop(of: [.text], isTargeted: nil) { providers in
             _ = providers.first?.loadObject(ofClass: String.self) { playerID, _ in
                 if let playerID = playerID {

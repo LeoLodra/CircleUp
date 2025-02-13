@@ -16,33 +16,60 @@ struct GameBoardView: View {
         GeometryReader { geometry in
             ZStack {
                 VStack {
-                    Text("Current Player: \(gamePresenter.currentPlayer.name)")
-                        .font(.custom("Chalkboard SE", size: 24))
+                    (
+                    Text("Current Player: ")
                         .foregroundColor(.lightText)
-                        .padding()
+                    +
+                    Text("\(gamePresenter.currentPlayer.name)")
+                        .foregroundColor(gamePresenter.currentPlayer.color)
+                    )
+                    .font(.custom("Chalkboard SE", size: 22))
+                    .padding(2)
                     
                     if let activity = gamePresenter.currentActivity {
                         Text("\(activity.rawValue)")
-                            .font(.custom("Chalkboard SE", size: 30))
+                            .font(.custom("Chalkboard SE", size: 28))
                             .bold()
                             .foregroundColor(.neonPink)
                         
                         if let question = gamePresenter.currentQuestion {
                             VStack {
                                 Text(question.title)
-                                    .font(.custom("Chalkboard SE", size: 26))
+                                    .font(.custom("Chalkboard SE", size: 24))
                                     .multilineTextAlignment(.center)
                                     .foregroundColor(.fadedText)
                                 if !gamePresenter.isRolling {
                                     if let options = question.options {
-                                        HStack {
+                                        VStack {
                                             if let insights = question.insights {
-                                                ForEach(Array(zip(options, insights)), id: \.0) { (option, insight) in
-                                                    VoteDropAreaView(choice: option, insight: insight, presenter: gamePresenter)
+                                                VStack {
+                                                    HStack {
+                                                        VoteDropAreaView(choice: options[0], insight: insights[0], presenter: gamePresenter)
+                                                        VoteDropAreaView(choice: options[1], insight: insights[1], presenter: gamePresenter)
+                                                    }
+                                                    HStack {
+                                                        VoteDropAreaView(choice: options[2], insight: insights[2], presenter: gamePresenter)
+                                                        VoteDropAreaView(choice: options[3], insight: insights[3], presenter: gamePresenter)
+                                                    }
                                                 }
                                             } else {
-                                                ForEach(options, id: \.self) { option in
-                                                    VoteDropAreaView(choice: option, insight: nil, presenter: gamePresenter)
+                                                if options.count > 4 {
+                                                    HStack {
+                                                        ForEach(0..<4, id: \.self) { index in
+                                                            VoteDropAreaView(choice: options[index], insight: nil, presenter: gamePresenter)
+                                                        }
+                                                    }
+                                                    HStack {
+                                                        ForEach(4..<options.count, id: \.self) { index in
+                                                            VoteDropAreaView(choice: options[index], insight: nil, presenter: gamePresenter)
+                                                        }
+                                                    }
+                                                } else {
+                                                    HStack {
+                                                        ForEach(options, id: \.self) { option in
+                                                            VoteDropAreaView(choice: option, insight: nil, presenter: gamePresenter)
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -52,7 +79,7 @@ struct GameBoardView: View {
                                         Button("End Turn") {
                                             gamePresenter.endTurn()
                                         }
-                                        .buttonStyle(GameButtonStyle(color: Color.buttonRed))
+                                        .buttonStyle(GameButtonStyle(color: Color.buttonRed, width: 120, height: 50))
                                     }
                                 }
                             }
@@ -61,7 +88,6 @@ struct GameBoardView: View {
                         Text("Tap the button to start an activity!")
                             .font(.custom("Chalkboard SE", size: 30))
                             .foregroundColor(.neonPink)
-                            .padding()
                     }
                     
                     HStack {

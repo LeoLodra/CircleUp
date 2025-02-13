@@ -16,7 +16,7 @@ protocol GameInteractorProtocol {
     func previousPlayer(currentIndex: Int, playerCount: Int) -> Int
     
     func registerVote(playerID: String, choice: String, totalPlayers: Int)
-    func getPlayerName(from id: UUID, players: [Player]) -> String
+    func getPlayer(from id: UUID, players: [Player]) -> Player
     func clearVotes()
     func getVotes() -> [String: [UUID]]
     func isPlayerVoted(_ playerID: UUID) -> Bool

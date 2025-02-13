@@ -116,8 +116,8 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         nextPlayer()
     }
     
-    func getPlayerName(from id: UUID) -> String {
-        return interactor.getPlayerName(from: id, players: players)
+    func getPlayer(from id: UUID) -> Player {
+        return interactor.getPlayer(from: id, players: players)
     }
     
     

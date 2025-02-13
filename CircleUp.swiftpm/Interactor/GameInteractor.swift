@@ -24,12 +24,12 @@ final class GameInteractor: GameInteractorProtocol {
     
     private func generateActivities() {
         activityDeck = [
-//            .mostLikely: MostLikelyInteractor(),
-//            .wouldYouRather: WouldYouRatherInteractor(),
-//            .quickChallenge: QuickChallengeInteractor(),
-//            .charades: CharadesInteractor(),
-//            .moodTalk: MoodTalkInteractor(),
-//            .whichOne: WhichOneInteractor(),
+            .mostLikely: MostLikelyInteractor(),
+            .wouldYouRather: WouldYouRatherInteractor(),
+            .quickChallenge: QuickChallengeInteractor(),
+            .charades: CharadesInteractor(),
+            .moodTalk: MoodTalkInteractor(),
+            .whichOne: WhichOneInteractor(),
             .whatWouldYouDo: WhatWouldYouDoInteractor()
         ]
     }
@@ -91,7 +91,7 @@ final class GameInteractor: GameInteractorProtocol {
         return votes.values.flatMap { $0 }.contains(playerID)
     }
     
-    func getPlayerName(from id: UUID, players: [Player]) -> String {
-        return players.first(where: { $0.id == id })?.name ?? "?"
+    func getPlayer(from id: UUID, players: [Player]) -> Player {
+        return players.first(where: { $0.id == id })!
     }
 }
