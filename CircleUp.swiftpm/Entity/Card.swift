@@ -17,7 +17,7 @@ struct Card: Identifiable, Equatable {
 enum CardEffect {
     case skipTurn
     case reverseOrder
-    case teamUp // NOT DONE: What to do with the name (UI Problem) ->.quick, .charades, .moodTalk
+    case teamUp
     case stealWild
     case swapActivity
 }

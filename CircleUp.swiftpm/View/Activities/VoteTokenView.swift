@@ -10,7 +10,7 @@ import SwiftUI
 struct VoteTokenView: View {
     let player: Player
     @ObservedObject var presenter: GamePresenter
-
+    
     var body: some View {
         Text(getInitials(from: player.name))
             .font(.title)
@@ -20,6 +20,11 @@ struct VoteTokenView: View {
             .foregroundColor(.lightText) // Set text color dynamically
             .draggable(player.id.uuidString)
             .disabled(disableToken(presenter: presenter, player: player))
+            .overlay(
+                Circle()
+                    .stroke(player.color, lineWidth: 2)
+                    .opacity(presenter.currentPlayer == player ? 1 : 0)
+            )
     }
 }
 

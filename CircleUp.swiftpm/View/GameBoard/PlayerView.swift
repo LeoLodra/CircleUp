@@ -20,25 +20,17 @@ struct PlayerView: View {
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(gamePresenter.currentPlayer == player || gamePresenter.teammate == player ? player.color : Color.clear, lineWidth: 4) // Add a glowing border
+                        .stroke(gamePresenter.currentPlayer == player || gamePresenter.teammate == player ? player.color : Color.clear, lineWidth: 4)
                 )
-                .shadow(color: gamePresenter.currentPlayer == player || gamePresenter.teammate == player ? player.color : Color.clear, radius: 10) // Add a soft glow
+                .shadow(color: gamePresenter.currentPlayer == player || gamePresenter.teammate == player ? player.color : Color.clear, radius: 10)
             HStack {
-                if player.hand.count > 0 {
-                    VStack {
-                        Text(player.hand[0].title)
-                            .font(.subheadline)
-                            .padding(4)
-                            .background(Color.orange.opacity(0.7))
-                            .cornerRadius(6)
-                            .foregroundColor(.white)
-                        
-                        Button("Play") {
-                            cardPresenter.playSavedCard(player.hand[0])
-                        }
-                        .buttonStyle(GameButtonStyle(color: .green))
-                    }
-                }
+                CardView(
+                    card: player.hand.indices.contains(0) ? player.hand[0] : nil,
+                    isEnabled: gamePresenter.currentPlayer == player && !gamePresenter.isRolling,
+                    playerColor: player.color,
+                    cardPresenter: cardPresenter
+                )
+                
                 
                 VStack {
                     Text("\(player.name)")
@@ -48,21 +40,13 @@ struct PlayerView: View {
                     VoteTokenView(player: player, presenter: gamePresenter)
                 }
                 
-                if player.hand.count > 1 {
-                    VStack {
-                        Text(player.hand[1].title)
-                            .font(.subheadline)
-                            .padding(4)
-                            .background(Color.orange.opacity(0.7))
-                            .cornerRadius(6)
-                            .foregroundColor(.white)
-                        
-                        Button("Play") {
-                            cardPresenter.playSavedCard(player.hand[1])
-                        }
-                        .buttonStyle(GameButtonStyle(color: .green))
-                    }
-                }
+                CardView(
+                    card: player.hand.indices.contains(1) ? player.hand[1] : nil,
+                    isEnabled: gamePresenter.currentPlayer == player && !gamePresenter.isRolling,
+                    playerColor: player.color,
+                    cardPresenter: cardPresenter
+                )
+                
             }
         }
         VStack {
@@ -74,9 +58,10 @@ struct PlayerView: View {
                         gamePresenter.stealWildCard(from: player)
                     }
                 }
-                .buttonStyle(GameButtonStyle(color: .buttonOrange))
+                .buttonStyle(GameButtonStyle(color: player.color))
             }
         }
         .frame(width: 300, height: 300)
     }
 }
+

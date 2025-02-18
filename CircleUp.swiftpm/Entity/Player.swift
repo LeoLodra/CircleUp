@@ -38,7 +38,7 @@ enum PersonalityType: String {
 extension Player {
     func calculatePersonalityType() -> PersonalityType {
         guard !personalityScores.isEmpty else {
-            return .pulseShifter // Default fallback if no data
+            return .midnightMirage // Default fallback if no data
         }
         
         // Compute total points across all personality traits
@@ -59,12 +59,3 @@ extension Player {
         return dominantTrait
     }
 }
-
-//Cyber Phantom – Mysterious and unpredictable, always making bold moves.
-//Electric Maverick – A risk-taker who thrives on excitement and challenges.
-//Luminous Oracle – Thoughtful and insightful, always seeing deeper meanings.
-//Glitch Rebel – Defies expectations, always twisting the game’s mechanics.
-//Neon Visionary – A strategist who carefully plans every move.
-//Hyper Nova – Energetic and loud, always bringing the party to life.
-//Midnight Mirage – Cool and composed, observing before striking.
-//Pulse Shifter – Adapts to any situation, always staying one step ahead.

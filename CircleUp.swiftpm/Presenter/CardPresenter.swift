@@ -60,22 +60,21 @@ final class CardPresenter: CardPresenterProtocol {
         guard let playerIndex = gamePresenter.players.firstIndex(where: { $0.id == gamePresenter.currentPlayer.id }) else { return }
         guard let _ = gamePresenter.currentPlayer.hand.firstIndex(where: { $0.id == card.id }) else { return }
         print("Playing saved card: \(card)")
-        if gamePresenter.isRolling {
-            return
-        }
-        if card.effect == .swapActivity {
-            if gamePresenter.currentQuestion == nil {
-                print("There is no question to swap")
-                //MARK: Add response in UI or Disable if nil
-                return
-            }
-        } else if card.effect == .teamUp {
-            if gamePresenter.currentActivity != .charades && gamePresenter.currentActivity != .quickChallenge && gamePresenter.currentActivity != .moodTalk {
-                print("Team up is not possible in this activity")
-                return
-            }
-        }
         applyCardEffect(card: card)
         interactor.playSavedCard(card: card, for: &gamePresenter.players[playerIndex])
+    }
+    
+    func ableToTeamUp() -> Bool {
+        if gamePresenter.currentActivity != .charades && gamePresenter.currentActivity != .quickChallenge && gamePresenter.currentActivity != .moodTalk {
+            return false
+        }
+        return true
+    }
+    
+    func ableToSwap() -> Bool {
+        if gamePresenter.currentQuestion == nil {
+            return false
+        }
+        return true
     }
 }

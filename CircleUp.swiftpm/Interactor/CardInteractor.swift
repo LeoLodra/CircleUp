@@ -19,10 +19,10 @@ final class CardInteractor: CardInteractorProtocol {
     private func generateWildCards() {
         wildCards = [
             addCards(Card(title: "Skip", description: "Skip your turn", effect: .skipTurn), count: 5),
-            addCards(Card(title: "Reverse Order", description: "Reverse turn order", effect: .reverseOrder), count: 5),
+            addCards(Card(title: "Reverse", description: "Reverse turn order", effect: .reverseOrder), count: 5),
             addCards(Card(title: "Swap", description: "Change the current question / activity", effect: .swapActivity), count: 5),
-            addCards(Card(title: "Steal Wild Card", description: "Steal a random wild card from a player", effect: .stealWild), count: 5),
-            addCards(Card(title: "Team Up", description: "Team up for a challenge with a player of your choice", effect: .teamUp), count: 5)
+            addCards(Card(title: "Steal", description: "Steal a random wild card from a player", effect: .stealWild), count: 5),
+            addCards(Card(title: "TeamUp", description: "Team up for a challenge with a player of your choice", effect: .teamUp), count: 5)
         ].flatMap { $0 }.shuffled()
     }
     
