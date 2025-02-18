@@ -13,4 +13,5 @@ struct Question {
     var options: [String]? // Multiple choices for the question
     var insights: [String]?
     var type: ActivityType
+    var personalityScores: [String: [PersonalityType: Int]]?
 }

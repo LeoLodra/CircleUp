@@ -16,12 +16,33 @@ struct GameBoardView: View {
         GeometryReader { geometry in
             ZStack {
                 VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            gamePresenter.showEndGameConfirmation = true
+                        }) {
+                            Image(systemName: "power.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundColor(Color.buttonRed)
+                                .frame(height: 45)
+                        }
+                        .alert("End Game and Show Personalities?", isPresented: $gamePresenter.showEndGameConfirmation) {
+                            Button("Yes", role: .destructive) {
+                                //MARK: SHOW PERSONALITIES
+                            }
+                            Button("Cancel", role: .cancel) { }
+                        }
+                    }
+                    Spacer()
+                }
+                VStack {
                     (
-                    Text("Current Player: ")
-                        .foregroundColor(.lightText)
-                    +
-                    Text("\(gamePresenter.currentPlayer.name)")
-                        .foregroundColor(gamePresenter.currentPlayer.color)
+                        Text("Current Player: ")
+                            .foregroundColor(.lightText)
+                        +
+                        Text("\(gamePresenter.currentPlayer.name)")
+                            .foregroundColor(gamePresenter.currentPlayer.color)
                     )
                     .font(.custom("Chalkboard SE", size: 22))
                     .padding(2)
@@ -75,11 +96,33 @@ struct GameBoardView: View {
                                         }
                                     }
                                     
-                                    if gamePresenter.turnDone || question.options == nil {
+                                    if question.options == nil {
+                                        if !gamePresenter.feedback {
+                                            Button("Done") {
+                                                gamePresenter.feedback = true
+                                            }.buttonStyle(GameButtonStyle(color: Color.buttonRed))
+                                        } else {
+                                            HStack {
+                                                if gamePresenter.currentActivity == .charades {
+                                                    VoteDropAreaView(choice: "Acted out with full energy", insight: nil, presenter: gamePresenter)
+                                                    VoteDropAreaView(choice: "Minimal effort, reluctant", insight: nil, presenter: gamePresenter)
+                                                } else if gamePresenter.currentActivity == .moodTalk {
+                                                    VoteDropAreaView(choice: "Open and deep response", insight: nil, presenter: gamePresenter)
+                                                    VoteDropAreaView(choice: "Kept it vague or dodged", insight: nil, presenter: gamePresenter)
+                                                } else if gamePresenter.currentActivity == .quickChallenge {
+                                                    VoteDropAreaView(choice: "Completed with confidence", insight: nil, presenter: gamePresenter)
+                                                    VoteDropAreaView(choice: "Struggled or refused", insight: nil, presenter: gamePresenter)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    if gamePresenter.turnDone {
                                         Button("End Turn") {
                                             gamePresenter.endTurn()
                                         }
                                         .buttonStyle(GameButtonStyle(color: Color.buttonRed, width: 120, height: 50))
+                                        
                                     }
                                 }
                             }

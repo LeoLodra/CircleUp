@@ -15,6 +15,8 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     @Published var currentQuestion: Question?
     @Published var isRolling: Bool = false
     @Published var turnDone: Bool = false
+    @Published var feedback: Bool = false
+    @Published var showEndGameConfirmation: Bool = false
     
     @Published var votes: [String: [UUID]] = [:]
     
@@ -75,7 +77,8 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
                 currentQuestion = Question(
                     title: finalQuestion.title,
                     options: players.map { $0.name },
-                    type: finalQuestion.type
+                    type: finalQuestion.type,
+                    personalityScores: finalQuestion.personalityScores
                 )
             } else {
                 currentQuestion = finalQuestion
@@ -100,7 +103,21 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     }
     
     func registerVote(playerID: String, choice: String) {
-        interactor.registerVote(playerID: playerID, choice: choice, totalPlayers: players.count)
+        // Add personality scores for each player's choice
+        guard let uuid = UUID(uuidString: playerID),
+              let question = currentQuestion,
+              let playerIndex = players.firstIndex(where: { $0.id == uuid }) else { return }
+        
+        if currentActivity == .whatWouldYouDo || currentActivity == .wouldYouRather || currentActivity == .whichOne || currentActivity == .mostLikely {
+            interactor.registerVote(playerID: playerID, choice: choice, totalPlayers: players.count)
+            if currentActivity != .mostLikely {
+                players[playerIndex].addPersonalityPoints(for: choice, from: question)
+            }
+        } else {
+            giveFeedback(playerIndex: playerIndex, choice: choice)
+            interactor.registerVote(playerID: playerID, choice: choice, totalPlayers: 1)
+        }
+        
         self.votes = interactor.getVotes() // Sync votes from interactor
     }
     
@@ -109,17 +126,84 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     }
     
     func endTurn() {
+        if currentActivity == .mostLikely {
+            determineMostVoted()
+        }
+        
         currentActivity = nil
         currentQuestion = nil
         turnDone = false
+        feedback = false
+        
+        votes.removeAll()
         interactor.clearVotes()
+        
         nextPlayer()
+    }
+    
+    private func determineMostVoted() {
+        print("votes: \(votes)")
+        guard let currentQuestion = currentQuestion, !votes.isEmpty else { return }
+        
+        let voteCounts = votes.mapValues { $0.count }
+        let maxVotes = voteCounts.values.max()
+        
+        let mostVotedPlayers = voteCounts
+            .filter { $0.value == maxVotes }
+            .map { $0.key }
+        
+        if !mostVotedPlayers.isEmpty {
+            print("Most voted player(s): \(mostVotedPlayers)")
+            
+            // Get the personality score mapping for this question
+            print("Current Question: \(currentQuestion)")
+            print("Personality Scores: \(currentQuestion.personalityScores ?? [:])")
+            
+            if let personalityScores = currentQuestion.personalityScores?["default"] {
+                for playerName in mostVotedPlayers {
+                    if let playerIndex = players.firstIndex(where: { $0.name == playerName }) {
+                        for (trait, points) in personalityScores {
+                            players[playerIndex].personalityScores[trait, default: 0] += points
+                        }
+                        print("\(players[playerIndex].name) gained: \(personalityScores)")
+                        print("\(players[playerIndex].personalityScores)")
+                    }
+                }
+            }
+        }
+    }
+    
+    private func giveFeedback(playerIndex: Int, choice: String) {
+        if currentActivity == .charades {
+            if choice == "Acted out with full energy" {
+                players[playerIndex].personalityScores[.hyperNova, default: 0] += 3
+                players[playerIndex].personalityScores[.electricMaverick, default: 0] += 2
+            } else if choice == "Minimal effort, reluctant" {
+                players[playerIndex].personalityScores[.midnightMirage, default: 0] += 3
+                players[playerIndex].personalityScores[.cyberPhantom, default: 0] += 2
+            }
+        } else if currentActivity == .moodTalk {
+            if choice == "Open and deep response" {
+                players[playerIndex].personalityScores[.luminousOracle, default: 0] += 3
+                players[playerIndex].personalityScores[.hyperNova, default: 0] += 2
+            } else if choice == "Kept it vague or dodged" {
+                players[playerIndex].personalityScores[.cyberPhantom, default: 0] += 3
+                players[playerIndex].personalityScores[.pulseShifter, default: 0] += 2
+            }
+        } else if currentActivity == .quickChallenge {
+            if choice == "Completed with confidence" {
+                players[playerIndex].personalityScores[.electricMaverick, default: 0] += 3
+                players[playerIndex].personalityScores[.glitchRebel, default: 0] += 2
+            } else if choice == "Struggled or refused" {
+                players[playerIndex].personalityScores[.midnightMirage, default: 0] += 3
+                players[playerIndex].personalityScores[.neonVisionary, default: 0] += 2
+            }
+        }
     }
     
     func getPlayer(from id: UUID) -> Player {
         return interactor.getPlayer(from: id, players: players)
     }
-    
     
     //
     // Wild Card Effects
@@ -128,15 +212,24 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     private var isReversed = false
     
     func skipCurrentTurn() {
+        players[currentPlayerIndex].personalityScores[.midnightMirage, default: 0] += 3
+        players[currentPlayerIndex].personalityScores[.cyberPhantom, default: 0] += 2
+        
         endTurn()
     }
     
     func reverseTurnOrder() {
+        players[currentPlayerIndex].personalityScores[.glitchRebel, default: 0] += 3
+        players[currentPlayerIndex].personalityScores[.pulseShifter, default: 0] += 2
+        
         isReversed.toggle()
     }
     
     @MainActor
     func swapActivity() async {
+        players[currentPlayerIndex].personalityScores[.pulseShifter, default: 0] += 3
+        players[currentPlayerIndex].personalityScores[.neonVisionary, default: 0] += 2
+        
         currentActivity = nil
         currentQuestion = nil
         
@@ -154,11 +247,17 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     
     func teamUp(with player: Player) {
         //        guard let index = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
+        players[currentPlayerIndex].personalityScores[.hyperNova, default: 0] += 3
+        players[currentPlayerIndex].personalityScores[.luminousOracle, default: 0] += 2
+        
         print("teaming up with \(player.name)")
         selectPlayerFor = nil
     }
     
     func stealWildCard(from player: Player) {
+        players[currentPlayerIndex].personalityScores[.cyberPhantom, default: 0] += 3
+        players[currentPlayerIndex].personalityScores[.electricMaverick, default: 0] += 2
+        
         guard let stolenCardIndex = player.hand.firstIndex(where: { _ in true }),
               let victimIndex = players.firstIndex(where: { $0.id == player.id }),
               let thiefIndex = players.firstIndex(where: { $0.id == currentPlayer.id }) else {

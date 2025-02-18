@@ -57,6 +57,18 @@ struct SetupView: View {
                     .padding()
                 }
             } else {
+                    HStack {
+                        Button(action: {
+                            playerNames = []
+                        }) {
+                            Image(systemName: "arrowshape.turn.up.backward.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundColor(Color.buttonRed)
+                                .frame(height: 40)
+                        }
+                        Spacer()
+                    }
                 GeometryReader { geometry in
                     VStack {
                         Text("Enter names for \(playerCount) players:")
