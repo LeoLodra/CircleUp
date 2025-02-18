@@ -22,9 +22,11 @@ struct GameView: View {
                     }
                     
                 case .gameBoard:
-                    GameBoardView(gamePresenter: gamePresenter, cardPresenter: cardPresenter) {
+                    GameBoardView(gamePresenter: gamePresenter, cardPresenter: cardPresenter, gameRouter: router) {
                         router.navigateToSetup()
                     }
+                case .playerPersonality:
+                    PlayerPersonalityView(players: gamePresenter.players)
                 }
             }
             .frame(width: max(geometry.size.width, geometry.size.height),

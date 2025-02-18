@@ -38,7 +38,7 @@ func disableToken(presenter: GamePresenter, player: Player) -> Bool {
             return true
         }
     } else {
-        if presenter.feedback == true && presenter.currentPlayer == player {
+        if presenter.feedback == true && presenter.currentPlayer == player && !presenter.isRolling && !presenter.isPlayerVoted(player.id) {
             return false
         }
     }

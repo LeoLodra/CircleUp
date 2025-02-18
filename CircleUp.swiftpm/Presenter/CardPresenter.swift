@@ -69,6 +69,11 @@ final class CardPresenter: CardPresenterProtocol {
                 //MARK: Add response in UI or Disable if nil
                 return
             }
+        } else if card.effect == .teamUp {
+            if gamePresenter.currentActivity != .charades && gamePresenter.currentActivity != .quickChallenge && gamePresenter.currentActivity != .moodTalk {
+                print("Team up is not possible in this activity")
+                return
+            }
         }
         applyCardEffect(card: card)
         interactor.playSavedCard(card: card, for: &gamePresenter.players[playerIndex])

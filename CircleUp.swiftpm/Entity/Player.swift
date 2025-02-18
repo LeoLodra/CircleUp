@@ -25,14 +25,14 @@ struct Player: Identifiable, Equatable {
 }
 
 enum PersonalityType: String {
-    case cyberPhantom
-    case electricMaverick
-    case luminousOracle
-    case glitchRebel
-    case neonVisionary
-    case hyperNova
-    case midnightMirage
-    case pulseShifter
+    case cyberPhantom = "Cyber Phantom"
+    case electricMaverick = "Electric Maverick"
+    case luminousOracle = "Luminous Oracle"
+    case glitchRebel = "Glitch Rebel"
+    case neonVisionary = "Neon Visionary"
+    case hyperNova = "Hyper Nova"
+    case midnightMirage = "Midnight Mirage"
+    case pulseShifter = "Pulse Shifter"
 }
 
 extension Player {

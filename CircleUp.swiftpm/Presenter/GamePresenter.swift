@@ -13,10 +13,12 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     @Published var currentPlayerIndex: Int = 0
     @Published var currentActivity: ActivityType?
     @Published var currentQuestion: Question?
+    
     @Published var isRolling: Bool = false
     @Published var turnDone: Bool = false
     @Published var feedback: Bool = false
     @Published var showEndGameConfirmation: Bool = false
+    @Published var teammate: Player? = nil
     
     @Published var votes: [String: [UUID]] = [:]
     
@@ -134,6 +136,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         currentQuestion = nil
         turnDone = false
         feedback = false
+        teammate = nil
         
         votes.removeAll()
         interactor.clearVotes()
@@ -176,27 +179,27 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     private func giveFeedback(playerIndex: Int, choice: String) {
         if currentActivity == .charades {
             if choice == "Acted out with full energy" {
-                players[playerIndex].personalityScores[.hyperNova, default: 0] += 3
-                players[playerIndex].personalityScores[.electricMaverick, default: 0] += 2
+                players[playerIndex].personalityScores[.hyperNova, default: 0] += 2
+                players[playerIndex].personalityScores[.electricMaverick, default: 0] += 1
             } else if choice == "Minimal effort, reluctant" {
-                players[playerIndex].personalityScores[.midnightMirage, default: 0] += 3
-                players[playerIndex].personalityScores[.cyberPhantom, default: 0] += 2
+                players[playerIndex].personalityScores[.midnightMirage, default: 0] += 2
+                players[playerIndex].personalityScores[.cyberPhantom, default: 0] += 1
             }
         } else if currentActivity == .moodTalk {
             if choice == "Open and deep response" {
-                players[playerIndex].personalityScores[.luminousOracle, default: 0] += 3
-                players[playerIndex].personalityScores[.hyperNova, default: 0] += 2
+                players[playerIndex].personalityScores[.luminousOracle, default: 0] += 2
+                players[playerIndex].personalityScores[.hyperNova, default: 0] += 1
             } else if choice == "Kept it vague or dodged" {
-                players[playerIndex].personalityScores[.cyberPhantom, default: 0] += 3
-                players[playerIndex].personalityScores[.pulseShifter, default: 0] += 2
+                players[playerIndex].personalityScores[.cyberPhantom, default: 0] += 2
+                players[playerIndex].personalityScores[.pulseShifter, default: 0] += 1
             }
         } else if currentActivity == .quickChallenge {
             if choice == "Completed with confidence" {
-                players[playerIndex].personalityScores[.electricMaverick, default: 0] += 3
-                players[playerIndex].personalityScores[.glitchRebel, default: 0] += 2
+                players[playerIndex].personalityScores[.electricMaverick, default: 0] += 2
+                players[playerIndex].personalityScores[.glitchRebel, default: 0] += 1
             } else if choice == "Struggled or refused" {
-                players[playerIndex].personalityScores[.midnightMirage, default: 0] += 3
-                players[playerIndex].personalityScores[.neonVisionary, default: 0] += 2
+                players[playerIndex].personalityScores[.midnightMirage, default: 0] += 2
+                players[playerIndex].personalityScores[.neonVisionary, default: 0] += 1
             }
         }
     }
@@ -212,23 +215,23 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     private var isReversed = false
     
     func skipCurrentTurn() {
-        players[currentPlayerIndex].personalityScores[.midnightMirage, default: 0] += 3
-        players[currentPlayerIndex].personalityScores[.cyberPhantom, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.midnightMirage, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.cyberPhantom, default: 0] += 1
         
         endTurn()
     }
     
     func reverseTurnOrder() {
-        players[currentPlayerIndex].personalityScores[.glitchRebel, default: 0] += 3
-        players[currentPlayerIndex].personalityScores[.pulseShifter, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.glitchRebel, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.pulseShifter, default: 0] += 1
         
         isReversed.toggle()
     }
     
     @MainActor
     func swapActivity() async {
-        players[currentPlayerIndex].personalityScores[.pulseShifter, default: 0] += 3
-        players[currentPlayerIndex].personalityScores[.neonVisionary, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.pulseShifter, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.neonVisionary, default: 0] += 1
         
         currentActivity = nil
         currentQuestion = nil
@@ -246,17 +249,18 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     }
     
     func teamUp(with player: Player) {
-        //        guard let index = players.firstIndex(where: { $0.id == currentPlayer.id }) else { return }
-        players[currentPlayerIndex].personalityScores[.hyperNova, default: 0] += 3
-        players[currentPlayerIndex].personalityScores[.luminousOracle, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.hyperNova, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.luminousOracle, default: 0] += 1
+        
+        teammate = player
         
         print("teaming up with \(player.name)")
         selectPlayerFor = nil
     }
     
     func stealWildCard(from player: Player) {
-        players[currentPlayerIndex].personalityScores[.cyberPhantom, default: 0] += 3
-        players[currentPlayerIndex].personalityScores[.electricMaverick, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.cyberPhantom, default: 0] += 2
+        players[currentPlayerIndex].personalityScores[.electricMaverick, default: 0] += 1
         
         guard let stolenCardIndex = player.hand.firstIndex(where: { _ in true }),
               let victimIndex = players.firstIndex(where: { $0.id == player.id }),

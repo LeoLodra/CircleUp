@@ -75,7 +75,7 @@ final class GameInteractor: GameInteractorProtocol {
     
     private func endVoting() {
         // Notify presenter via delegate or completion handler
-        delegate?.didEndVoting() // Notify the presenter
+        delegate?.didEndVoting()
     }
     
     func getVotes() -> [String: [UUID]] {

@@ -10,6 +10,10 @@ import SwiftUI
 struct GameBoardView: View {
     @ObservedObject var gamePresenter: GamePresenter
     @ObservedObject var cardPresenter: CardPresenter
+    @ObservedObject var gameRouter: GameRouter
+    
+    @State private var showPersonalityScreen = false
+
     let onExit: () -> Void
     
     var body: some View {
@@ -29,7 +33,7 @@ struct GameBoardView: View {
                         }
                         .alert("End Game and Show Personalities?", isPresented: $gamePresenter.showEndGameConfirmation) {
                             Button("Yes", role: .destructive) {
-                                //MARK: SHOW PERSONALITIES
+                                gameRouter.navigateToPersonalityScreen()
                             }
                             Button("Cancel", role: .cancel) { }
                         }

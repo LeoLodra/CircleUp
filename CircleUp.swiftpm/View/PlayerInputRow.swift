@@ -20,7 +20,7 @@ struct PlayerInputRow: View {
                 .frame(width: 300)
                 .padding(5)
 
-            // **Color Picker UI**
+            // Color Picker
             HStack {
                 ForEach(availableColors, id: \.self) { color in
                     Circle()

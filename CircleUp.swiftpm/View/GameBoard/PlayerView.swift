@@ -20,9 +20,9 @@ struct PlayerView: View {
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(gamePresenter.currentPlayer == player ? player.color : Color.clear, lineWidth: 4) // Add a glowing border
+                        .stroke(gamePresenter.currentPlayer == player || gamePresenter.teammate == player ? player.color : Color.clear, lineWidth: 4) // Add a glowing border
                 )
-                .shadow(color: gamePresenter.currentPlayer == player ? player.color : Color.clear, radius: 10) // Add a soft glow
+                .shadow(color: gamePresenter.currentPlayer == player || gamePresenter.teammate == player ? player.color : Color.clear, radius: 10) // Add a soft glow
             HStack {
                 if player.hand.count > 0 {
                     VStack {
