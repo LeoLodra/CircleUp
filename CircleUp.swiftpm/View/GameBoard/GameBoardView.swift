@@ -144,7 +144,7 @@ struct GameBoardView: View {
                             Button("Wild Cards") {
                                 cardPresenter.drawCard()
                             }
-                            .buttonStyle(GameButtonStyle(color: .buttonOrange))
+                            .buttonStyle(GameButtonStyle(color: gamePresenter.currentPlayer.hand.count >= 2 ? .buttonDisabled : .buttonOrange))
                             .disabled(gamePresenter.currentPlayer.hand.count >= 2)
                         }
                     }

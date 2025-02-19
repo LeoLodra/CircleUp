@@ -15,7 +15,7 @@ struct PlayerPersonalityView: View {
         ZStack {
             VStack {
                 Text("Player Personalities")
-                    .font(.custom("Chalkboard SE", size: 34))
+                    .font(.custom("Chalkboard SE", size: 36))
                     .foregroundColor(.lightText)
                     .fontWeight(.bold)
                     .padding(.top, 50)
@@ -27,52 +27,106 @@ struct PlayerPersonalityView: View {
                         let personalityDetails = getPersonalityDetails(for: personalityType)
                         
                         HStack(spacing: 20) {
-                            Image(personalityType.rawValue) // Assumes assets named after personality type
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 180, height: 180)
-                                .clipShape(RoundedRectangle(cornerRadius: 15))
-                            
-                            VStack(alignment: .leading, spacing: 10) {
-                                HStack {
-                                    Circle()
-                                        .fill(player.color)
-                                        .frame(width: 20, height: 20)
-                                    Text(player.name)
-                                        .font(.custom("Chalkboard SE", size: 28))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.lightText)
-                                }
-                                
+                            VStack {
                                 Text(personalityType.rawValue.capitalized)
-                                    .font(.custom("Chalkboard SE", size: 24))
+                                    .font(.custom("Chalkboard SE", size: 30))
                                     .foregroundColor(.lightText)
                                 
                                 Text(personalityDetails.description)
                                     .font(.custom("Chalkboard SE", size: 22))
                                     .foregroundColor(.white.opacity(0.8))
                                     .multilineTextAlignment(.leading)
-                                
-                                traitSection(title: "Strengths", traits: personalityDetails.strengths, icon: "bolt.fill", color: .green)
-                                traitSection(title: "Weaknesses", traits: personalityDetails.weaknesses, icon: "exclamationmark.triangle.fill", color: .red)
-                                
+                                Image(personalityType.rawValue)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 250, height: 250)
                                 Text("\(personalityDetails.catchphrase)")
-                                    .font(.custom("Chalkboard SE", size: 18))
+                                    .font(.custom("Chalkboard SE", size: 22))
                                     .foregroundColor(.white.opacity(0.8))
                                     .italic()
-                                
-                                Spacer()
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(10)
+                            .padding(50)
                             
-                            VStack {
-                                Text("\(personalityDetails.idealPlaystyle)")
-                                    .font(.custom("Chalkboard SE", size: 18))
-                                    .foregroundColor(.white.opacity(0.8))
-                                Text("\(personalityDetails.worstNightmare)")
-                                    .font(.custom("Chalkboard SE", size: 18))
-                                    .foregroundColor(.white.opacity(0.8))
+                            VStack(alignment: .leading, spacing: 10) {
+                                HStack {
+                                    Circle()
+                                        .fill(player.color)
+                                        .frame(width: 25, height: 25)
+                                        .padding()
+                                    Text(player.name)
+                                        .font(.custom("Chalkboard SE", size: 32))
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.lightText)
+                                }
+                                
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 10){
+                                        traitSection(title: "Strengths", traits: personalityDetails.strengths, icon: "bolt.fill", color: .green)
+                                            .frame(height: UIScreen.main.bounds.height * 0.25)
+                                        traitSection(title: "Weaknesses", traits: personalityDetails.weaknesses, icon: "exclamationmark.triangle.fill", color: .red)
+                                            .frame(height: UIScreen.main.bounds.height * 0.25)
+                                        Spacer()
+                                    }
+                                    .frame(width: UIScreen.main.bounds.width * 0.3, alignment: .leading)
+                                    
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        // Playstyle
+                                        VStack(alignment: .leading) {
+                                            Text("🕹 **Ideal Playstyle**")
+                                                .font(.custom("Chalkboard SE", size: 22))
+                                                .foregroundColor(.lightText)
+                                            Text(personalityDetails.idealPlaystyle)
+                                                .font(.custom("Chalkboard SE", size: 20))
+                                                .foregroundColor(.white.opacity(0.8))
+                                                .padding(.bottom, 5)
+                                            
+                                            Text("⚠️ **Worst Nightmare**")
+                                                .font(.custom("Chalkboard SE", size: 22))
+                                                .foregroundColor(.lightText)
+                                            Text(personalityDetails.worstNightmare)
+                                                .font(.custom("Chalkboard SE", size: 20))
+                                                .foregroundColor(.white.opacity(0.8))
+                                        }
+                                        .padding(.bottom, 20)
+                                        
+                                        // Relationships
+                                        VStack(alignment: .leading, spacing: 5) {
+                                            Text("💙 **Strongest Relationship**")
+                                                .font(.custom("Chalkboard SE", size: 22))
+                                                .foregroundColor(.green)
+                                            HStack {
+                                                Image(personalityDetails.strongRelationship.rawValue)
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 50, height: 50)
+                                                    .clipShape(Circle())
+                                                Text(personalityDetails.strongRelationship.rawValue.capitalized)
+                                                    .font(.custom("Chalkboard SE", size: 20))
+                                                    .foregroundColor(.white.opacity(0.8))
+                                            }
+                                            
+                                            Text("💔 **Weakest Relationship**")
+                                                .font(.custom("Chalkboard SE", size: 22))
+                                                .foregroundColor(.red)
+                                            HStack {
+                                                Image(personalityDetails.weakRelationship.rawValue)
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 50, height: 50)
+                                                    .clipShape(Circle())
+                                                Text(personalityDetails.weakRelationship.rawValue.capitalized)
+                                                    .font(.custom("Chalkboard SE", size: 20))
+                                                    .foregroundColor(.white.opacity(0.8))
+                                            }
+                                        }
+                                        Spacer()
+                                    }
+                                    
+                                    
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(10)
+                                
                                 
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -126,9 +180,11 @@ struct PlayerPersonalityView: View {
             HStack {
                 Image(systemName: icon)
                     .foregroundColor(color)
+                    .font(.body)
                 Text(title)
-                    .font(.headline)
-                    .foregroundColor(.white)
+                    .font(.custom("Chalkboard SE", size: 22))
+                    .bold()
+                    .foregroundColor(.lightText)
             }
             ForEach(traits, id: \..self) { trait in
                 HStack {
@@ -136,9 +192,10 @@ struct PlayerPersonalityView: View {
                         .foregroundColor(.white.opacity(0.8))
                     Text(trait)
                         .foregroundColor(.white.opacity(0.9))
-                        .font(.body)
+                        .font(.custom("Chalkboard SE", size: 20))
                 }
             }
+            Spacer()
         }
     }
 }
