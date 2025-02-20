@@ -74,7 +74,6 @@ final class GameInteractor: GameInteractorProtocol {
     }
     
     private func endVoting() {
-        // Notify presenter via delegate or completion handler
         delegate?.didEndVoting()
     }
     
@@ -83,7 +82,6 @@ final class GameInteractor: GameInteractorProtocol {
     }
     
     func clearVotes() {
-        print("Voting Complete: \(votes)")
         votes.removeAll()
     }
     

@@ -8,11 +8,30 @@
 import SwiftUI
 
 struct PlayerPersonalityView: View {
+    @ObservedObject var presenter: GamePresenter
+    @ObservedObject var gameRouter: GameRouter
     var players: [Player]
     @State private var selectedIndex = 0
     
     var body: some View {
         ZStack {
+            VStack {
+                HStack {
+                    Button(action: {
+                        presenter.resetGame()
+                        gameRouter.currentView = .setup
+                    }) {
+                        Image(systemName: "house.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(Color.buttonRed)
+                            .frame(height: 40)
+                    }
+                    .padding()
+                    Spacer()
+                }
+                Spacer()
+            }
             VStack {
                 Text("Player Personalities")
                     .font(.custom("Chalkboard SE", size: 36))

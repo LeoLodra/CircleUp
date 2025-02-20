@@ -10,7 +10,7 @@ import Foundation
 struct Question {
     var id: UUID = UUID()
     var title: String
-    var options: [String]? // Multiple choices for the question
+    var options: [String]?
     var insights: [String]?
     var type: ActivityType
     var personalityScores: [String: [PersonalityType: Int]]?

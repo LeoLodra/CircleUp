@@ -19,7 +19,7 @@ class BaseQuestionInteractor {
         guard var activityQuestions = questions[type], !activityQuestions.isEmpty else { return nil }
         let randomIndex = Int.random(in: 0..<activityQuestions.count)
         let question = activityQuestions.remove(at: randomIndex)
-        questions[type] = activityQuestions // Update the dictionary after removal
+        questions[type] = activityQuestions
         return question
     }
     

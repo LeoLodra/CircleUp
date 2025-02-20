@@ -20,7 +20,6 @@ struct Player: Identifiable, Equatable {
         for (trait, points) in scores {
             personalityScores[trait, default: 0] += points
         }
-        print(personalityScores)
     }
 }
 
@@ -38,23 +37,16 @@ enum PersonalityType: String {
 extension Player {
     func calculatePersonalityType() -> PersonalityType {
         guard !personalityScores.isEmpty else {
-            return .midnightMirage // Default fallback if no data
+            return .midnightMirage
         }
         
-        // Compute total points across all personality traits
         let totalPoints = personalityScores.values.reduce(0, +)
         
-        // Normalize scores as percentages
         let normalizedScores = personalityScores.mapValues { score in
             (Double(score) / Double(totalPoints)) * 100
         }
         
-        // Find the trait with the highest normalized percentage
         let dominantTrait = normalizedScores.max { $0.value < $1.value }?.key ?? .pulseShifter
-        
-        print("\(personalityScores)")
-        print("Normalized Scores: \(normalizedScores)")
-        print("Dominant Trait: \(dominantTrait.rawValue)")
         
         return dominantTrait
     }

@@ -17,7 +17,7 @@ struct VoteTokenView: View {
             .frame(width: 50, height: 50)
             .background(disableToken(presenter: presenter, player: player) ? Color.buttonDisabled : player.color)
             .cornerRadius(25)
-            .foregroundColor(.lightText) // Set text color dynamically
+            .foregroundColor(.lightText)
             .draggable(player.id.uuidString)
             .disabled(disableToken(presenter: presenter, player: player))
             .overlay(

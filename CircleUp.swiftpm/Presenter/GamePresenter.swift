@@ -145,7 +145,6 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
     }
     
     private func determineMostVoted() {
-        print("votes: \(votes)")
         guard let currentQuestion = currentQuestion, !votes.isEmpty else { return }
         
         let voteCounts = votes.mapValues { $0.count }
@@ -156,20 +155,12 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
             .map { $0.key }
         
         if !mostVotedPlayers.isEmpty {
-            print("Most voted player(s): \(mostVotedPlayers)")
-            
-            // Get the personality score mapping for this question
-            print("Current Question: \(currentQuestion)")
-            print("Personality Scores: \(currentQuestion.personalityScores ?? [:])")
-            
             if let personalityScores = currentQuestion.personalityScores?["default"] {
                 for playerName in mostVotedPlayers {
                     if let playerIndex = players.firstIndex(where: { $0.name == playerName }) {
                         for (trait, points) in personalityScores {
                             players[playerIndex].personalityScores[trait, default: 0] += points
                         }
-                        print("\(players[playerIndex].name) gained: \(personalityScores)")
-                        print("\(players[playerIndex].personalityScores)")
                     }
                 }
             }
@@ -253,8 +244,6 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
         players[currentPlayerIndex].personalityScores[.luminousOracle, default: 0] += 1
         
         teammate = player
-        
-        print("teaming up with \(player.name)")
         selectPlayerFor = nil
     }
     
@@ -268,8 +257,25 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorDelegate {
             return
         }
         
-        let stolenCard = players[victimIndex].hand.remove(at: stolenCardIndex) // Remove only one instance
+        let stolenCard = players[victimIndex].hand.remove(at: stolenCardIndex)
         players[thiefIndex].hand.append(stolenCard)
         selectPlayerFor = nil
     }
+    
+    func resetGame() {
+        players.removeAll()
+        currentPlayerIndex = 0
+
+        interactor.resetActivities()
+        
+        votes.removeAll()
+        turnDone = false
+        feedback = false
+        currentActivity = nil
+        currentQuestion = nil
+        teammate = nil
+        
+        (cardInteractor as? CardInteractor)?.generateWildCards()
+    }
+
 }

@@ -26,6 +26,5 @@ protocol CardInteractorProtocol {
     func drawCard(for player: Player) -> Card?
     func saveCard(card: Card, for player: inout Player)
     func playSavedCard(card: Card, for player: inout Player)
-//    func applyCardEffect(card: Card, to gamePresenter: GamePresenter) async
     func applyCardEffect(card: Card, action: @escaping @MainActor () -> Void)
 }

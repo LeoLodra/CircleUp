@@ -59,7 +59,6 @@ final class CardPresenter: CardPresenterProtocol {
     func playSavedCard(_ card: Card) {
         guard let playerIndex = gamePresenter.players.firstIndex(where: { $0.id == gamePresenter.currentPlayer.id }) else { return }
         guard let _ = gamePresenter.currentPlayer.hand.firstIndex(where: { $0.id == card.id }) else { return }
-        print("Playing saved card: \(card)")
         applyCardEffect(card: card)
         interactor.playSavedCard(card: card, for: &gamePresenter.players[playerIndex])
     }

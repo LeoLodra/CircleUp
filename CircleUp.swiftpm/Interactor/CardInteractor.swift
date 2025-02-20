@@ -16,7 +16,7 @@ final class CardInteractor: CardInteractorProtocol {
         return Array(repeating: card, count: count)
     }
     
-    private func generateWildCards() {
+    func generateWildCards() {
         wildCards = [
             addCards(Card(title: "Skip", description: "Skip your turn", effect: .skipTurn), count: 5),
             addCards(Card(title: "Reverse", description: "Reverse turn order", effect: .reverseOrder), count: 5),

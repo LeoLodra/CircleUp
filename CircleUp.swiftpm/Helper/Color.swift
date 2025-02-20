@@ -13,7 +13,7 @@ extension Color {
     static let backgroundSecondary = Color(hex: "#15112A")  // Deep Navy (Darker Contrast)
     static let optionBackground = Color(hex: "#3B347A")
     
-    // Accents (Neon Glow) - Adjusted for Better Contrast
+    // Accents (Neon Glow)
     static let neonPink = Color(hex: "#FF007F")  // Keep as an accent
     static let deepCyan = Color(hex: "#00B2C9")  // Softer cyan
     static let neonPurple = Color(hex: "#A020F0")  // Slightly Softer Purple for Glow

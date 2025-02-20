@@ -26,7 +26,7 @@ struct GameView: View {
                         router.navigateToSetup()
                     }
                 case .playerPersonality:
-                    PlayerPersonalityView(players: gamePresenter.players)
+                    PlayerPersonalityView(presenter: gamePresenter, gameRouter: router, players: gamePresenter.players)
                 }
             }
             .frame(width: max(geometry.size.width, geometry.size.height),
