@@ -62,9 +62,12 @@ struct PlayerPersonalityView: View {
                                 Text("\(personalityDetails.catchphrase)")
                                     .font(.custom("Chalkboard SE", size: 22))
                                     .foregroundColor(.white.opacity(0.8))
+                                    .lineLimit(nil)
+                                    .multilineTextAlignment(.center)
                                     .italic()
                             }
                             .padding(50)
+                            .frame(width: UIScreen.main.bounds.width * 0.35)
                             
                             VStack(alignment: .leading, spacing: 10) {
                                 HStack {
